@@ -46,3 +46,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Interactive Filter Reset
+window.resetFilters = function() {
+    // Uncheck all brand checkboxes
+    const checkboxes = document.querySelectorAll('.brand-list input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+    
+    // Reset slider visually (if applicable)
+    const minThumb = document.querySelector('.slider-thumb.min');
+    const maxThumb = document.querySelector('.slider-thumb.max');
+    const fill = document.querySelector('.slider-fill');
+    
+    if (minThumb && maxThumb && fill) {
+        minThumb.style.right = '0%';
+        maxThumb.style.left = '0%';
+        fill.style.left = '0%';
+        fill.style.right = '0%';
+    }
+    
+    // In a real Shopify OS 2.0 store, this would redirect to the base collection URL to clear filters.
+    // window.location.href = window.location.pathname;
+};

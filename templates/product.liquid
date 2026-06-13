@@ -1,0 +1,26 @@
+<div class="main-container" style="padding-top: 2rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+        <div class="product-gallery">
+            <img src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title | escape }}" style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+        </div>
+        <div class="product-details">
+            <h1 style="font-size: 2rem; margin-bottom: 1rem;">{{ product.title }}</h1>
+            <p style="font-size: 1.5rem; color: var(--primary); font-weight: bold; margin-bottom: 1.5rem;">{{ product.price | money }}</p>
+            
+            <div class="product-description" style="margin-bottom: 2rem; color: var(--text-muted);">
+                {{ product.description }}
+            </div>
+
+            <form action="/cart/add" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <button type="submit" class="add-cart-btn" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1.1rem;">
+                    <i data-lucide="shopping-cart"></i>
+                    <span>إضافة إلى السلة</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    if(window.lucide) lucide.createIcons();
+</script>

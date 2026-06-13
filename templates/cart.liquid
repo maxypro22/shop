@@ -1,0 +1,41 @@
+<div class="main-container" style="padding-top: 2rem; max-width: 800px; margin: 0 auto;">
+    <h1 style="margin-bottom: 2rem;">سلة المشتريات</h1>
+    
+    {% if cart.item_count > 0 %}
+        <form action="/cart" method="post" novalidate>
+            <div style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--shadow-sm);">
+                {% for item in cart.items %}
+                    <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                        <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}" style="width: 100px; border-radius: var(--radius-sm);">
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 0.5rem;"><a href="{{ item.url }}" style="text-decoration: none; color: inherit;">{{ item.product.title }}</a></h3>
+                            <p style="color: var(--primary); font-weight: bold;">{{ item.price | money }}</p>
+                            <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0" style="color: #ef4444; font-size: 0.9rem; text-decoration: none;">إزالة</a>
+                        </div>
+                        <div>
+                            <input type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0" style="width: 60px; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); text-align: center;">
+                        </div>
+                    </div>
+                {% endfor %}
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1rem;">
+                    <h3 style="font-size: 1.5rem;">المجموع: {{ cart.total_price | money }}</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" name="update" class="pill" style="background: var(--bg-main);">تحديث السلة</button>
+                        <button type="submit" name="checkout" class="add-cart-btn" style="padding: 0.8rem 2rem;">إتمام الطلب</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <div style="text-align: center; padding: 4rem; background: var(--bg-card); border-radius: var(--radius-lg);">
+            <i data-lucide="shopping-cart" style="width: 64px; height: 64px; color: var(--text-light); margin-bottom: 1rem;"></i>
+            <h2>سلة المشتريات فارغة</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">لم تقم بإضافة أي منتجات حتى الآن.</p>
+            <a href="{{ routes.root_url }}" class="add-cart-btn" style="display: inline-flex; text-decoration: none;">متابعة التسوق</a>
+        </div>
+    {% endif %}
+</div>
+<script>
+    if(window.lucide) lucide.createIcons();
+</script>

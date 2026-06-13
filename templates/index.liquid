@@ -31,7 +31,7 @@
             <div class="filter-section">
                 <div class="filter-header">
                     <h3>نطاق السعر</h3>
-                    <button class="reset-btn">إعادة ضبط</button>
+                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
                 </div>
                 <p class="filter-desc">فلتر السعر غير مفعل في هذه النسخة</p>
                 <div class="slider-container">
@@ -50,7 +50,7 @@
             <div class="filter-section">
                 <div class="filter-header">
                     <h3>الماركة</h3>
-                    <button class="reset-btn">إعادة ضبط</button>
+                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
                 </div>
                 <div class="brand-list">
                     {% for product_vendor in shop.vendors limit: 5 %}

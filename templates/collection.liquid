@@ -1,0 +1,50 @@
+<div class="main-container" style="padding-top: 2rem;">
+    <h1 style="margin-bottom: 2rem; font-size: 2rem;">{{ collection.title }}</h1>
+    
+    <div class="content-wrapper">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar-filters">
+            <div class="filter-section">
+                <div class="filter-header">
+                    <h3>نطاق السعر</h3>
+                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-track">
+                        <div class="slider-fill"></div>
+                        <div class="slider-thumb min"></div>
+                        <div class="slider-thumb max"></div>
+                    </div>
+                    <div class="price-labels">
+                        <span>0 ر.ق</span>
+                        <span>1000 ر.ق</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <div class="product-grid">
+            {% paginate collection.products by 12 %}
+                {% for product in collection.products %}
+                    {% include 'product-card', product: product %}
+                {% else %}
+                    <p>لا توجد منتجات في هذا القسم.</p>
+                {% endfor %}
+                
+                {% if paginate.pages > 1 %}
+                    <div class="pagination" style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 2rem;">
+                        {{ paginate | default_pagination }}
+                    </div>
+                {% endif %}
+            {% endpaginate %}
+        </div>
+    </div>
+</div>
+<script>
+    if(window.lucide) lucide.createIcons();
+    function resetFilters() {
+        alert("تم إعادة ضبط الفلاتر.");
+        // Basic reset logic will be added to script.js
+    }
+</script>
