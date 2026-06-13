@@ -5,6 +5,9 @@
         <!-- Sidebar Filters -->
         <aside class="sidebar-filters">
             <form id="CollectionFiltersForm" class="filter-form">
+                {% if collection.sort_by %}
+                    <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">
+                {% endif %}
                 {%- for filter in collection.filters -%}
                     <div class="filter-section">
                         <div class="filter-header">

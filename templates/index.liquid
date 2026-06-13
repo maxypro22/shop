@@ -2,26 +2,21 @@
     
     <!-- Category Pills -->
     <section class="category-pills">
-        <button class="pill active">الكل</button>
+        <a href="/collections/all" class="pill active" style="text-decoration: none;">الكل</a>
+        <a href="/collections/العطور" class="pill" style="text-decoration: none;">العطور</a>
+        <a href="/collections/shoes" class="pill" style="text-decoration: none;">shoes</a>
+        <a href="/collections/سليبر-بحر" class="pill" style="text-decoration: none;">سليبر بحر</a>
+        <a href="/collections/oversized" class="pill" style="text-decoration: none;">oversized</a>
+        <a href="/collections/t-shirt" class="pill" style="text-decoration: none;">t-shirt</a>
+        <a href="/collections/قمصان-رجالية" class="pill" style="text-decoration: none;">قمصان رجالية</a>
+        
+        <!-- Append any other collections dynamically -->
         {% for collection in collections %}
-            {% if collection.handle != 'frontpage' %}
+            {% assign handle = collection.handle %}
+            {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
                 <a href="{{ collection.url }}" class="pill" style="text-decoration: none;">{{ collection.title }}</a>
             {% endif %}
         {% endfor %}
-        <!-- Fallbacks for visual layout if collections are empty -->
-        {% if collections.size < 2 %}
-            <button class="pill">أوفر سايز</button>
-            <button class="pill">شورتات</button>
-            <button class="pill">قمصان بحر</button>
-            <button class="pill">مقاسات كبيرة</button>
-            <button class="pill">أطقم</button>
-            <button class="pill">هودي</button>
-            <button class="pill">كابات</button>
-            <button class="pill">جاكيت</button>
-            <button class="pill">ساعات</button>
-            <button class="pill">نظارات</button>
-            <button class="pill">لابوبو</button>
-        {% endif %}
     </section>
 
     <div class="content-wrapper">
