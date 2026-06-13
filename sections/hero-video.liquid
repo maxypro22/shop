@@ -1,0 +1,160 @@
+<div class="hero-video-section">
+    <div class="hero-video-wrapper">
+        <video 
+            id="HeroVideo"
+            class="hero-video" 
+            autoplay 
+            muted 
+            loop 
+            playsinline
+            poster="{{ 'custom-logo.jpg' | asset_url }}"
+        >
+            <source src="{{ 'hero-video.mp4' | asset_url }}" type="video/mp4">
+        </video>
+
+        {% if section.settings.show_overlay %}
+        <div class="hero-video-overlay">
+            {% if section.settings.title != blank %}
+                <h2 class="hero-video-title">{{ section.settings.title }}</h2>
+            {% endif %}
+            {% if section.settings.subtitle != blank %}
+                <p class="hero-video-subtitle">{{ section.settings.subtitle }}</p>
+            {% endif %}
+            {% if section.settings.btn_text != blank and section.settings.btn_link != blank %}
+                <a href="{{ section.settings.btn_link }}" class="hero-video-btn">
+                    {{ section.settings.btn_text }}
+                    <i data-lucide="arrow-left" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.hero-video-section {
+    width: 100%;
+    background: #000;
+    overflow: hidden;
+}
+
+.hero-video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/7;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .hero-video-wrapper {
+        aspect-ratio: 16/9;
+    }
+}
+
+.hero-video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 3rem;
+    gap: 1rem;
+}
+
+.hero-video-title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    text-align: right;
+}
+
+.hero-video-subtitle {
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: rgba(255,255,255,0.85);
+    text-align: right;
+    max-width: 400px;
+}
+
+.hero-video-btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: white;
+    color: var(--text-dark);
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 0.85rem 2rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.hero-video-btn:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .hero-video-overlay {
+        padding: 1.5rem;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+        justify-content: flex-end;
+    }
+    .hero-video-subtitle { max-width: 100%; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "فيديو البطل",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "إظهار نص فوق الفيديو",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "العنوان الرئيسي",
+      "default": "الجديد في Shop Five"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "النص الفرعي",
+      "default": "اكتشف أحدث التصاميم لهذا الموسم"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "نص الزر"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "رابط الزر"
+    }
+  ],
+  "presets": [
+    {
+      "name": "فيديو البطل"
+    }
+  ]
+}
+{% endschema %}
