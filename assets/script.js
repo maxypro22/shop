@@ -68,3 +68,9 @@ window.resetFilters = function() {
     // In a real Shopify OS 2.0 store, this would redirect to the base collection URL to clear filters.
     // window.location.href = window.location.pathname;
 };
+
+// Product Page JS
+function changeMainImage(thumbnail, newSrc) { document.getElementById('MainProductImage').src = newSrc; document.querySelectorAll('.thumbnail').forEach(function(t) { t.classList.remove('active'); }); thumbnail.classList.add('active'); }
+function adjustQty(amount) { var input = document.getElementById('Quantity'); if(!input) return; var current = parseInt(input.value); var newQty = current + amount; if (newQty >= 1) { input.value = newQty; } }
+function updateVariantSelection() { var radios = document.querySelectorAll('.variant-radio:checked'); var selectedOptions = Array.from(radios).map(radio => radio.value); var select = document.getElementById('ProductSelect'); if(!select || !window.productVariants) return; var matchedVariant = window.productVariants.find(function(variant) { return variant.options.every(function(option, index) { return option === selectedOptions[index]; }); }); var addToCartBtn = document.getElementById('AddToCart'); var addToCartText = document.getElementById('AddToCartText'); var priceElement = document.getElementById('ProductPrice'); if (matchedVariant) { select.value = matchedVariant.id; var formatMoney = function(cents) { return (cents / 100).toFixed(2) + ' —.ﬁ'; }; if(priceElement && matchedVariant.price) { priceElement.innerText = formatMoney(matchedVariant.price); } if (matchedVariant.available) { addToCartBtn.disabled = false; addToCartText.innerText = '≈÷«›… ≈·Ï «·”·…'; } else { addToCartBtn.disabled = true; addToCartText.innerText = '‰›œ  «·ﬂ„Ì…'; } } else { addToCartBtn.disabled = true; addToCartText.innerText = '€Ì— „ Ê›—'; } }
+document.addEventListener('DOMContentLoaded', function() { if(document.querySelector('.variant-radio')) { updateVariantSelection(); } });

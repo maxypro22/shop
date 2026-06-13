@@ -1,26 +1,110 @@
 <div class="main-container" style="padding-top: 2rem;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+    
+    <div class="product-layout">
+        <!-- Gallery -->
         <div class="product-gallery">
-            <img src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title | escape }}" style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+            <div class="main-image-container">
+                <img id="MainProductImage" src="{{ product.featured_image | img_url: '800x' }}" alt="{{ product.title | escape }}">
+            </div>
+            {% if product.media.size > 1 %}
+            <div class="thumbnail-list">
+                {% for media in product.media %}
+                    <img src="{{ media | img_url: '200x' }}" alt="{{ media.alt | escape }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="changeMainImage(this, '{{ media | img_url: '800x' }}')">
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
-        <div class="product-details">
-            <h1 style="font-size: 2rem; margin-bottom: 1rem;">{{ product.title }}</h1>
-            <p style="font-size: 1.5rem; color: var(--primary); font-weight: bold; margin-bottom: 1.5rem;">{{ product.price | money }}</p>
-            
-            <div class="product-description" style="margin-bottom: 2rem; color: var(--text-muted);">
-                {{ product.description }}
+
+        <!-- Details -->
+        <div class="product-info">
+            <h1 class="product-title-large">{{ product.title }}</h1>
+            <div class="product-price-large">
+                <span id="ProductPrice">{{ product.price | money }}</span>
+                {% if product.compare_at_price > product.price %}
+                    <span id="ComparePrice" class="old-price-large">{{ product.compare_at_price | money }}</span>
+                {% endif %}
             </div>
 
-            <form action="/cart/add" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-                <button type="submit" class="add-cart-btn" style="width: 100%; justify-content: center; padding: 1rem; font-size: 1.1rem;">
-                    <i data-lucide="shopping-cart"></i>
-                    <span>إضافة إلى السلة</span>
-                </button>
-            </form>
+            {% form 'product', product, id: 'AddToCartForm', class: 'product-form' %}
+                <!-- Variants -->
+                {% unless product.has_only_default_variant %}
+                    {% for option in product.options_with_values %}
+                        <div class="variant-selector">
+                            <label class="variant-label">{{ option.name }}</label>
+                            <div class="variant-pills">
+                                {% for value in option.values %}
+                                    <input type="radio" name="option-{{ option.position }}" id="Option-{{ option.position }}-{{ forloop.index0 }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} class="variant-radio" onchange="updateVariantSelection()">
+                                    <label for="Option-{{ option.position }}-{{ forloop.index0 }}" class="variant-pill">{{ value }}</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endunless %}
+
+                <!-- Hidden Master Select -->
+                <select name="id" id="ProductSelect" style="display: none;">
+                    {% for variant in product.variants %}
+                        <option value="{{ variant.id }}" data-price="{{ variant.price | money }}" data-compare="{{ variant.compare_at_price | money }}" data-available="{{ variant.available }}" data-options='{{ variant.options | json }}'>
+                            {{ variant.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Quantity -->
+                <div class="quantity-selector">
+                    <label class="variant-label">الكمية</label>
+                    <div class="qty-input-wrapper">
+                        <button type="button" class="qty-btn" onclick="adjustQty(-1)"><i data-lucide="minus"></i></button>
+                        <input type="number" id="Quantity" name="quantity" value="1" min="1" class="qty-input" readonly>
+                        <button type="button" class="qty-btn" onclick="adjustQty(1)"><i data-lucide="plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="product-actions">
+                    <button type="submit" name="add" id="AddToCart" class="add-cart-btn-large" {% unless product.available %}disabled{% endunless %}>
+                        <i data-lucide="shopping-cart"></i>
+                        <span id="AddToCartText">
+                            {% if product.available %}إضافة إلى السلة{% else %}نفدت الكمية{% endif %}
+                        </span>
+                    </button>
+                    {{ form | payment_button }}
+                </div>
+            {% endform %}
+
+            <div class="product-description-full">
+                <h3>وصف المنتج</h3>
+                <div class="rte">
+                    {{ product.description }}
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Related Products -->
+    {% assign current_product = product %}
+    {% assign related_collection = product.collections.first %}
+    
+    {% if related_collection and related_collection.products_count > 1 %}
+    <div class="related-products">
+        <h2 class="section-title">قد يعجبك أيضاً</h2>
+        <div class="product-grid">
+            {% assign counter = 0 %}
+            {% for rel_product in related_collection.products %}
+                {% if rel_product.handle != current_product.handle and counter < 4 %}
+                    {% render 'product-card', product: rel_product %}
+                    {% assign counter = counter | plus: 1 %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 </div>
+
 <script>
     if(window.lucide) lucide.createIcons();
+    
+    // Pass product options array to JS
+    window.productVariants = {{ product.variants | json }};
 </script>

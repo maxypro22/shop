@@ -598,3 +598,37 @@ button {
 .price-input-wrapper { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-main); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); flex: 1; }
 .price-input-wrapper input { border: none; background: transparent; width: 100%; outline: none; font-family: inherit; }
 .filter-form { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* Product Page Layout */
+.product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+.main-image-container { background-color: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-bottom: 1rem; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+.main-image-container img { width: 100%; height: 100%; object-fit: contain; }
+.thumbnail-list { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: var(--transition); }
+.thumbnail:hover, .thumbnail.active { opacity: 1; border-color: var(--primary); }
+.product-title-large { font-size: 2rem; margin-bottom: 1rem; color: var(--text-dark); }
+.product-price-large { font-size: 1.5rem; color: var(--primary); font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+.old-price-large { font-size: 1.1rem; color: var(--text-light); text-decoration: line-through; font-weight: normal; }
+.variant-selector { margin-bottom: 1.5rem; }
+.variant-label { display: block; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-dark); }
+.variant-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.variant-radio { display: none; }
+.variant-pill { padding: 0.5rem 1.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-full); cursor: pointer; font-weight: 600; transition: var(--transition); background-color: var(--bg-card); }
+.variant-radio:checked + .variant-pill { background-color: var(--primary); color: white; border-color: var(--primary); }
+.quantity-selector { margin-bottom: 2rem; }
+.qty-input-wrapper { display: inline-flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-full); background-color: var(--bg-card); overflow: hidden; }
+.qty-btn { padding: 0.5rem 1rem; color: var(--text-dark); display: flex; align-items: center; justify-content: center; }
+.qty-btn:hover { color: var(--primary); background-color: var(--bg-main); }
+.qty-input { width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-family: inherit; outline: none; }
+.qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.product-actions { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+.add-cart-btn-large { width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 700; color: white; background-color: var(--text-dark); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition); }
+.add-cart-btn-large:hover { background-color: black; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.add-cart-btn-large:disabled { background-color: var(--text-light); cursor: not-allowed; transform: none; box-shadow: none; }
+.shopify-payment-button__button { border-radius: var(--radius-full) !important; padding: 1rem !important; font-family: inherit !important; }
+.product-description-full { background-color: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.product-description-full h3 { margin-bottom: 1rem; font-size: 1.2rem; }
+.rte { color: var(--text-muted); line-height: 1.8; }
+.related-products { margin-top: 4rem; }
+.section-title { font-size: 1.5rem; margin-bottom: 2rem; text-align: right; }
+@media (max-width: 768px) { .product-layout { grid-template-columns: 1fr; gap: 1.5rem; } }
