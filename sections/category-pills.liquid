@@ -1,5 +1,11 @@
 <div class="main-container" style="padding-bottom: 0;">
-    <section class="category-pills" style="padding-bottom: 1rem;">
+    <section class="category-pills" style="padding-bottom: 1rem; position: relative;">
+        <!-- More Button (Fixed at start) -->
+        <button class="pill more-btn" onclick="openCategoriesModal()" style="border:none; cursor:pointer; position: sticky; right: 0; z-index: 10; box-shadow: -4px 0 10px rgba(0,0,0,0.05); background-color: var(--text-dark); color: white;">
+            المزيد
+            <i data-lucide="grid" style="width:14px; height:14px; display:inline-block; margin-right:5px; vertical-align: middle;"></i>
+        </button>
+
         <a href="/collections/all" class="pill {% if request.path == '/collections/all' or request.path == '/' %}active{% endif %}" style="text-decoration: none;">الكل</a>
         <a href="/collections/العطور" class="pill {% if request.path contains 'العطور' %}active{% endif %}" style="text-decoration: none;">العطور</a>
         <a href="/collections/shoes" class="pill {% if request.path contains 'shoes' %}active{% endif %}" style="text-decoration: none;">shoes</a>
@@ -16,6 +22,35 @@
             {% endif %}
         {% endfor %}
     </section>
+</div>
+
+<!-- Full Categories Modal -->
+<div id="CategoriesModal" class="categories-modal" onclick="if(event.target === this) closeCategoriesModal()">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.5rem; color: var(--text-dark);">تصفح جميع الأقسام</h2>
+            <button class="close-modal" onclick="closeCategoriesModal()" style="border:none; background:none; cursor:pointer; padding:0.5rem; color:var(--text-muted);">
+                <i data-lucide="x" style="width:24px; height:24px;"></i>
+            </button>
+        </div>
+        
+        <div class="modal-grid" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            <a href="/collections/all" class="pill {% if request.path == '/collections/all' or request.path == '/' %}active{% endif %}" style="text-decoration: none;">الكل</a>
+            <a href="/collections/العطور" class="pill {% if request.path contains 'العطور' %}active{% endif %}" style="text-decoration: none;">العطور</a>
+            <a href="/collections/shoes" class="pill {% if request.path contains 'shoes' %}active{% endif %}" style="text-decoration: none;">shoes</a>
+            <a href="/collections/سليبر-بحر" class="pill {% if request.path contains 'سليبر-بحر' %}active{% endif %}" style="text-decoration: none;">سليبر بحر</a>
+            <a href="/collections/oversized" class="pill {% if request.path contains 'oversized' %}active{% endif %}" style="text-decoration: none;">oversized</a>
+            <a href="/collections/t-shirt" class="pill {% if request.path contains 't-shirt' %}active{% endif %}" style="text-decoration: none;">t-shirt</a>
+            <a href="/collections/قمصان-رجالية" class="pill {% if request.path contains 'قمصان-رجالية' %}active{% endif %}" style="text-decoration: none;">قمصان رجالية</a>
+            
+            {% for collection in collections %}
+                {% assign handle = collection.handle %}
+                {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
+                    <a href="{{ collection.url }}" class="pill {% if request.path == collection.url %}active{% endif %}" style="text-decoration: none;">{{ collection.title }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 {% schema %}
