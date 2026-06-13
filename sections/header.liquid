@@ -1,8 +1,7 @@
 <header class="top-nav">
     <div class="logo">
-        <a href="{{ routes.root_url }}" style="text-decoration: none; color: inherit; display: flex; align-items: baseline; gap: 0.5rem;">
-            <h1>{{ shop.name }}</h1>
-            <span class="logo-en">SHOP FIVE</span>
+        <a href="{{ routes.root_url }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+            <img src="{{ 'custom-logo.jpg' | asset_url }}" alt="{{ shop.name }}" style="height: 64px; width: auto; border-radius: 8px;">
         </a>
     </div>
     

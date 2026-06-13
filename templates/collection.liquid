@@ -4,23 +4,69 @@
     <div class="content-wrapper">
         <!-- Sidebar Filters -->
         <aside class="sidebar-filters">
-            <div class="filter-section">
-                <div class="filter-header">
-                    <h3>نطاق السعر</h3>
-                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
-                </div>
-                <div class="slider-container">
-                    <div class="slider-track">
-                        <div class="slider-fill"></div>
-                        <div class="slider-thumb min"></div>
-                        <div class="slider-thumb max"></div>
+            <form id="CollectionFiltersForm" class="filter-form">
+                {%- for filter in collection.filters -%}
+                    <div class="filter-section">
+                        <div class="filter-header">
+                            <h3>{{ filter.label }}</h3>
+                            {%- if filter.active_values.size > 0 or filter.min_value.value != nil or filter.max_value.value != nil -%}
+                                <a href="{{ filter.url_to_remove }}" class="reset-btn" style="text-decoration:none;">إعادة ضبط</a>
+                            {%- endif -%}
+                        </div>
+
+                        {%- case filter.type -%}
+                            {%- when 'list' or 'boolean' -%}
+                                <div class="brand-list">
+                                    {%- for filter_value in filter.values -%}
+                                        <label class="brand-item" {% if filter_value.count == 0 and filter_value.active == false -%}style="opacity: 0.5;"{%- endif %}>
+                                            <input type="checkbox"
+                                                name="{{ filter_value.param_name }}"
+                                                value="{{ filter_value.value }}"
+                                                id="Filter-{{ filter.label | escape }}-{{ forloop.index }}"
+                                                {% if filter_value.active -%}checked{%- endif %}
+                                                {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                                                onchange="document.getElementById('CollectionFiltersForm').submit();"
+                                            >
+                                            <span class="custom-checkbox">
+                                                <i data-lucide="check"></i>
+                                            </span>
+                                            <span class="brand-name">{{ filter_value.label }} ({{ filter_value.count }})</span>
+                                        </label>
+                                    {%- endfor -%}
+                                </div>
+
+                            {%- when 'price_range' -%}
+                                <div class="price-range-inputs">
+                                    <div class="price-input-wrapper">
+                                        <span>{{ cart.currency.symbol }}</span>
+                                        <input type="number" 
+                                            name="{{ filter.min_value.param_name }}" 
+                                            id="Filter-{{ filter.min_value.param_name }}" 
+                                            {% if filter.min_value.value -%}
+                                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                                            {%- endif %}
+                                            placeholder="0" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                            onchange="document.getElementById('CollectionFiltersForm').submit();"
+                                        >
+                                    </div>
+                                    <span style="align-self: center;">إلى</span>
+                                    <div class="price-input-wrapper">
+                                        <span>{{ cart.currency.symbol }}</span>
+                                        <input type="number" 
+                                            name="{{ filter.max_value.param_name }}" 
+                                            id="Filter-{{ filter.max_value.param_name }}" 
+                                            {% if filter.max_value.value -%}
+                                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                                            {%- endif %}
+                                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                            onchange="document.getElementById('CollectionFiltersForm').submit();"
+                                        >
+                                    </div>
+                                </div>
+                        {%- endcase -%}
                     </div>
-                    <div class="price-labels">
-                        <span>0 ر.ق</span>
-                        <span>1000 ر.ق</span>
-                    </div>
-                </div>
-            </div>
+                {%- endfor -%}
+            </form>
         </aside>
 
         <!-- Product Grid -->
