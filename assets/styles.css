@@ -90,7 +90,7 @@ button {
 
 .search-bar input {
     width: 100%;
-    padding: 0.875rem 1rem 0.875rem 3rem; /* RTL padding */
+    padding: 0.875rem 1.5rem 0.875rem 3rem; /* left padding for search icon */
     border-radius: var(--radius-full);
     border: 1px solid var(--border-color);
     background-color: var(--bg-card);
@@ -98,6 +98,8 @@ button {
     font-size: 0.95rem;
     outline: none;
     transition: var(--transition);
+    text-align: right;
+    direction: rtl;
 }
 
 .search-bar input:focus {
@@ -107,7 +109,8 @@ button {
 
 .search-icon {
     position: absolute;
-    right: 1.25rem;
+    left: 1.25rem;
+    right: auto;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted);
