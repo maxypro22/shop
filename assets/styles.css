@@ -590,7 +590,51 @@ button {
     }
     
     .main-container {
-        padding: 0 1rem 1rem;
+        padding: 0 0.5rem 1rem;
+    }
+
+    /* Mobile 2-column Product Grid */
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .card-image {
+        padding: 0.5rem;
+    }
+
+    .product-card .card-content {
+        padding: 0.75rem;
+    }
+
+    .product-title {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        -webkit-line-clamp: 2; /* Ensure long titles don't break layout */
+    }
+
+    .price-action {
+        flex-direction: column-reverse; /* Put button above/below price */
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .add-cart-btn {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .add-cart-btn i {
+        width: 14px;
+        height: 14px;
+        margin-left: 0.25rem;
+    }
+
+    .old-price {
+        font-size: 0.75rem;
+        text-align: left;
     }
 }
 
