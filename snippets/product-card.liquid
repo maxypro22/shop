@@ -1,10 +1,15 @@
 <article class="product-card">
     <div class="card-image">
-        <button class="favorite-btn">
+        <button class="favorite-btn" onclick="event.preventDefault();">
             <i data-lucide="heart"></i>
         </button>
-        <a href="{{ product.url | within: collection }}">
-            <img src="{{ product.featured_image.src | img_url: '500x' }}" alt="{{ product.featured_image.alt | escape }}">
+        <a href="{{ product.url | within: collection }}" class="product-image-link">
+            <img src="{{ product.featured_image.src | img_url: '600x600', crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}" class="primary-image">
+            {% if product.images.size > 1 %}
+                <img src="{{ product.images[1].src | img_url: '600x600', crop: 'center' }}" alt="{{ product.images[1].alt | escape }}" class="secondary-image">
+            {% else %}
+                <img src="{{ product.featured_image.src | img_url: '600x600', crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}" class="secondary-image" style="opacity:0;">
+            {% endif %}
         </a>
         {% if product.tags contains 'top' %}
             <span class="badge top-item">الأكثر مبيعاً</span>
@@ -14,19 +19,25 @@
         <a href="{{ product.url | within: collection }}" style="text-decoration: none; color: inherit; flex: 1;">
             <h3 class="product-title">{{ product.title }}</h3>
         </a>
+        <div class="product-price-wrapper" style="margin-bottom: 1rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
+            <span>{{ product.price | money }}</span>
+            {% if product.compare_at_price > product.price %}
+                <span class="old-price" style="font-weight: normal; font-size: 0.85rem; text-decoration: line-through; color: var(--text-light);">{{ product.compare_at_price | money }}</span>
+            {% endif %}
+        </div>
         <div class="card-footer">
-            <div class="price-action">
-                {% if product.compare_at_price > product.price %}
-                    <span class="old-price">{{ product.compare_at_price | money }}</span>
-                {% endif %}
-                
-                <form action="/cart/add" method="post" enctype="multipart/form-data" class="add-to-cart-form">
+            <div class="card-actions-grid">
+                <form action="/cart/add" method="post" enctype="multipart/form-data" class="add-to-cart-form" style="flex: 1;">
                     <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-                    <button type="submit" class="add-cart-btn">
+                    <button type="submit" class="btn-action add-cart" style="width: 100%;">
                         <i data-lucide="shopping-cart"></i>
-                        <span>{{ product.price | money }}</span>
+                        <span>للسلة</span>
                     </button>
                 </form>
+                <a href="{{ product.url | within: collection }}" class="btn-action view-product" style="flex: 1;">
+                    <i data-lucide="eye"></i>
+                    <span>عرض</span>
+                </a>
             </div>
         </div>
     </div>
