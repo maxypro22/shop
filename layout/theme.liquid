@@ -29,7 +29,9 @@
         {% section 'header' %}
     </div>
 
-    {% section 'hero-video' %}
+    {% if template == 'index' %}
+        {% section 'hero-video' %}
+    {% endif %}
 
     <div style="background-color: var(--bg-main); box-shadow: var(--shadow-sm);">
         {% section 'category-pills' %}
