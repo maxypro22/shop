@@ -1,0 +1,33 @@
+<article class="product-card">
+    <div class="card-image">
+        <button class="favorite-btn">
+            <i data-lucide="heart"></i>
+        </button>
+        <a href="{{ product.url | within: collection }}">
+            <img src="{{ product.featured_image.src | img_url: '500x' }}" alt="{{ product.featured_image.alt | escape }}">
+        </a>
+        {% if product.tags contains 'top' %}
+            <span class="badge top-item">الأكثر مبيعاً</span>
+        {% endif %}
+    </div>
+    <div class="card-content">
+        <a href="{{ product.url | within: collection }}" style="text-decoration: none; color: inherit; flex: 1;">
+            <h3 class="product-title">{{ product.title }}</h3>
+        </a>
+        <div class="card-footer">
+            <div class="price-action">
+                {% if product.compare_at_price > product.price %}
+                    <span class="old-price">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+                
+                <form action="/cart/add" method="post" enctype="multipart/form-data" class="add-to-cart-form">
+                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                    <button type="submit" class="add-cart-btn">
+                        <i data-lucide="shopping-cart"></i>
+                        <span>{{ product.price | money }}</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</article>

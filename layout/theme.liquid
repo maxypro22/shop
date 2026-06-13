@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | {{ shop.name }}</title>
+    
+    {% if page_description %}
+        <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <!-- Google Fonts: Cairo for Arabic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Theme CSS -->
+    {{ 'styles.css' | asset_url | stylesheet_tag }}
+
+    <!-- Required Shopify Scripts -->
+    {{ content_for_header }}
+</head>
+<body>
+
+    {% section 'header' %}
+
+    <main role="main" id="MainContent">
+        {{ content_for_layout }}
+    </main>
+
+    <!-- Theme JS -->
+    {{ 'script.js' | asset_url | script_tag }}
+</body>
+</html>

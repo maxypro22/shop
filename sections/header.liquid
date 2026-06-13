@@ -1,0 +1,55 @@
+<header class="top-nav">
+    <div class="logo">
+        <a href="{{ routes.root_url }}" style="text-decoration: none; color: inherit; display: flex; align-items: baseline; gap: 0.5rem;">
+            <h1>{{ shop.name }}</h1>
+            <span class="logo-en">SHOP FIVE</span>
+        </a>
+    </div>
+    
+    <div class="search-bar">
+        <form action="{{ routes.search_url }}" method="get" role="search">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" name="q" placeholder="ابحث عن المنتجات، الماركات..." value="{{ search.terms | escape }}">
+        </form>
+    </div>
+
+    <div class="nav-actions">
+        {% if customer %}
+            <a href="{{ routes.account_url }}" class="action-btn">
+                <i data-lucide="user"></i>
+                <span>حسابي</span>
+            </a>
+        {% else %}
+            <a href="{{ routes.account_login_url }}" class="action-btn">
+                <i data-lucide="user"></i>
+                <span>تسجيل الدخول</span>
+            </a>
+        {% endif %}
+
+        <a href="/pages/favourites" class="action-btn">
+            <i data-lucide="heart"></i>
+            <span>المفضلة</span>
+        </a>
+
+        <a href="{{ routes.cart_url }}" class="action-btn cart-btn">
+            <div class="icon-wrapper">
+                <i data-lucide="shopping-cart"></i>
+                <span class="cart-badge">{{ cart.item_count }}</span>
+            </div>
+            <span>السلة</span>
+        </a>
+
+        {% if customer %}
+            <button class="profile-btn">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ customer.first_name | default: 'Felix' }}" alt="Profile">
+            </button>
+        {% endif %}
+    </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": []
+}
+{% endschema %}

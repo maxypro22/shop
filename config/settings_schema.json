@@ -1,0 +1,20 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Shop Five Custom Theme",
+    "theme_author": "Antigravity AI",
+    "theme_version": "1.0.0",
+    "theme_support_url": "https://shopify.com"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "primary_color",
+        "label": "Primary Color",
+        "default": "#6366f1"
+      }
+    ]
+  }
+]
