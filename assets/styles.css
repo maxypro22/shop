@@ -685,12 +685,29 @@ button {
 .categories-modal.active .modal-content { transform: translateY(0); }
 @media (max-width: 768px) { .modal-content { padding: 1.5rem; } }
 
-/* Product Image Hover & Buttons */
-.product-image-link { display: block; width: 100%; height: 100%; position: relative; }
-.product-image-link img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease, transform 0.5s ease; }
-.product-image-link .secondary-image { opacity: 0; }
-.product-card:hover .has-hover-image .primary-image { opacity: 0; }
-.product-card:hover .has-hover-image .secondary-image { opacity: 1; transform: scale(1.05); }
+/* Images positioned side by side, container clips them */
+.product-image-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden; /* critical - clips the sliding images */
+}
+.product-image-link img {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Primary image starts at 0 (visible), secondary starts shifted RIGHT (+100%) */
+.product-image-link .primary-image  { left: 0;     transform: translateX(0); }
+.product-image-link .secondary-image { left: 100%;  transform: translateX(0); }
+
+/* On hover: primary slides LEFT out (-100%), secondary slides LEFT into view (moves -100% from its start = 0) */
+.product-card:hover .has-hover-image .primary-image  { transform: translateX(-100%); }
+.product-card:hover .has-hover-image .secondary-image { transform: translateX(-100%); }
 /* Card Actions */
 .card-actions-grid { display: flex; gap: 0.5rem; width: 100%; }
 .btn-action { display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.6rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; transition: var(--transition); text-decoration: none; border: 1px solid transparent; cursor: pointer; }
