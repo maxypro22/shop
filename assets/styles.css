@@ -182,14 +182,9 @@ button {
 /* Category Pills */
 .category-pills {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
-    overflow-x: auto;
-    padding: 1rem 0 2rem;
-    scrollbar-width: none; /* Firefox */
-}
-
-.category-pills::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    padding: 1rem 2rem 2rem;
 }
 
 .pill {
