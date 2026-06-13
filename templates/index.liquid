@@ -1,24 +1,4 @@
-<div class="main-container">
-    
-    <!-- Category Pills -->
-    <section class="category-pills">
-        <a href="/collections/all" class="pill active" style="text-decoration: none;">الكل</a>
-        <a href="/collections/العطور" class="pill" style="text-decoration: none;">العطور</a>
-        <a href="/collections/shoes" class="pill" style="text-decoration: none;">shoes</a>
-        <a href="/collections/سليبر-بحر" class="pill" style="text-decoration: none;">سليبر بحر</a>
-        <a href="/collections/oversized" class="pill" style="text-decoration: none;">oversized</a>
-        <a href="/collections/t-shirt" class="pill" style="text-decoration: none;">t-shirt</a>
-        <a href="/collections/قمصان-رجالية" class="pill" style="text-decoration: none;">قمصان رجالية</a>
-        
-        <!-- Append any other collections dynamically -->
-        {% for collection in collections %}
-            {% assign handle = collection.handle %}
-            {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
-                <a href="{{ collection.url }}" class="pill" style="text-decoration: none;">{{ collection.title }}</a>
-            {% endif %}
-        {% endfor %}
-    </section>
-
+<div class="main-container" style="padding-top: 2rem;">
     <div class="content-wrapper">
         
         <!-- Sidebar Filters -->
