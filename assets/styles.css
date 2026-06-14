@@ -645,10 +645,11 @@ button {
 }
 
 /* Dynamic Filter Styles */
-.price-range-inputs { display: flex; gap: 1rem; margin-top: 1rem; }
-.price-input-wrapper { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); flex: 1; }
-.price-input-wrapper span { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
-.price-input-wrapper input { border: none; background: transparent; width: 100%; outline: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-dark); min-width: 0; }
+.price-range-inputs { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.price-range-inputs > span { text-align: center; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+.price-input-wrapper { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+.price-input-wrapper span { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.price-input-wrapper input { border: none; background: transparent; width: 100%; outline: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-dark); direction: ltr; min-width: 0; }
 .filter-form { display: flex; flex-direction: column; gap: 1.5rem; }
 
 /* Product Page Layout */
