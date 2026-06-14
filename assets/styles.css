@@ -1,30 +1,30 @@
 /* CSS Variables & Core Setup */
 :root {
-    --primary: #6366f1; /* Premium purple from reference */
-    --primary-light: #e0e7ff;
-    --primary-dark: #4f46e5;
+    --primary: #0f172a; /* Premium dark slate/black for a high-end look */
+    --primary-light: #f1f5f9;
+    --primary-dark: #000000;
     
-    --bg-main: #f8fafc; /* Very light cool gray/blue */
+    --bg-main: #fafafa; /* Minimalist off-white */
     --bg-card: #ffffff;
     
     --text-dark: #0f172a;
     --text-muted: #64748b;
     --text-light: #94a3b8;
     
-    --border-color: #e2e8f0;
+    --border-color: rgba(0, 0, 0, 0.06);
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-    --shadow-purple: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
+    --shadow-primary: 0 10px 25px rgba(15, 23, 42, 0.2);
     
-    --radius-sm: 8px;
-    --radius-md: 16px;
+    --radius-sm: 12px;
+    --radius-md: 18px;
     --radius-lg: 24px;
-    --radius-full: 9999px;
+    --radius-full: 99px;
     
     --font-family: 'Cairo', sans-serif;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Ultra-smooth Apple-like spring */
 }
 
 * {
@@ -59,7 +59,7 @@ button {
     align-items: center;
     justify-content: space-between;
     padding: 1rem 2rem;
-    background-color: var(--bg-main);
+    background-color: transparent;
 }
 
 .logo {
@@ -195,27 +195,28 @@ button {
 
 .pill {
     padding: 0.6rem 1.5rem;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: var(--radius-full);
     font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-dark);
+    font-weight: 700;
+    color: var(--text-muted);
     white-space: nowrap;
     transition: var(--transition);
-    box-shadow: var(--shadow-sm);
 }
 
 .pill:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    background-color: white;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
 }
 
 .pill.active {
-    background-color: var(--primary);
+    background-color: var(--text-dark);
     color: white;
-    border-color: var(--primary);
-    box-shadow: var(--shadow-purple);
+    border-color: var(--text-dark);
+    box-shadow: var(--shadow-primary);
 }
 
 /* Content Wrapper */
@@ -409,11 +410,13 @@ button {
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--border-color);
 }
 
 .product-card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-6px);
+    border-color: rgba(0, 0, 0, 0.08);
 }
 
 .card-image {
@@ -712,8 +715,10 @@ button {
 .card-actions-grid { display: flex; gap: 0.5rem; width: 100%; }
 .btn-action { display: flex; align-items: center; justify-content: center; gap: 0.25rem; padding: 0.6rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 700; transition: var(--transition); text-decoration: none; border: 1px solid transparent; cursor: pointer; }
 .btn-action i { width: 16px; height: 16px; }
-.btn-action.add-cart { background-color: var(--primary); color: white; border-color: var(--primary); }
-.btn-action.add-cart:hover { background-color: var(--primary-dark); }
+.btn-action.add-cart { background-color: var(--text-dark); color: white; border-color: var(--text-dark); }
+.btn-action.add-cart:hover { background-color: black; transform: translateY(-2px); box-shadow: var(--shadow-primary); }
+.btn-action.add-cart:active { transform: scale(0.98); }
 .btn-action.view-product { background-color: var(--bg-main); color: var(--text-dark); border-color: var(--border-color); }
-.btn-action.view-product:hover { border-color: var(--text-dark); background-color: white; }
+.btn-action.view-product:hover { border-color: var(--text-dark); background-color: white; transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.btn-action.view-product:active { transform: scale(0.98); }
 @media (max-width: 768px) { .card-actions-grid { flex-direction: column; } .btn-action { padding: 0.5rem; font-size: 0.8rem; width: 100%; } }
