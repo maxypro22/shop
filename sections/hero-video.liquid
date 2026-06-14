@@ -1,261 +1,134 @@
-<div id="hero-scroll-zone" class="hero-scroll-zone">
-    <div class="hero-canvas-sticky">
+<div class="hero-section" id="HeroSection">
 
-        <canvas id="HeroCanvas" class="hero-canvas"></canvas>
+    <!-- Full-bleed hero image -->
+    <img
+        id="HeroImage"
+        src="{{ 'hero-image.jpg' | asset_url }}"
+        alt="Shop Five"
+        class="hero-img"
+        loading="eager"
+        fetchpriority="high"
+    >
 
-        {% if section.settings.show_overlay %}
-        <div class="hero-video-overlay">
-            {% if section.settings.title != blank %}
-                <h2 class="hero-video-title">{{ section.settings.title }}</h2>
-            {% endif %}
-            {% if section.settings.subtitle != blank %}
-                <p class="hero-video-subtitle">{{ section.settings.subtitle }}</p>
-            {% endif %}
-            {% if section.settings.btn_text != blank and section.settings.btn_link != blank %}
-                <a href="{{ section.settings.btn_link }}" class="hero-video-btn">
-                    {{ section.settings.btn_text }}
-                    <i data-lucide="arrow-left" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
-                </a>
-            {% endif %}
-        </div>
+    <!-- Dark gradient overlay for readability -->
+    <div class="hero-overlay"></div>
+
+    <!-- Optional text overlay (controlled from theme editor) -->
+    {% if section.settings.show_overlay %}
+    <div class="hero-content">
+        {% if section.settings.title != blank %}
+            <h2 class="hero-title">{{ section.settings.title }}</h2>
         {% endif %}
-
-        <!-- scroll hint -->
-        <div class="hero-scroll-hint" id="HeroScrollHint">
-            <i data-lucide="chevrons-down"></i>
-        </div>
-
-        <!-- progress bar -->
-        <div class="hero-progress-bar">
-            <div class="hero-progress-fill" id="HeroProgress"></div>
-        </div>
-
+        {% if section.settings.subtitle != blank %}
+            <p class="hero-subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+        {% if section.settings.btn_text != blank and section.settings.btn_link != blank %}
+            <a href="{{ section.settings.btn_link }}" class="hero-cta">
+                {{ section.settings.btn_text }}
+                <i data-lucide="arrow-left" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
+            </a>
+        {% endif %}
     </div>
+    {% endif %}
+
+    <!-- Scroll hint -->
+    <div class="hero-scroll-hint" id="HeroScrollHint">
+        <i data-lucide="chevrons-down"></i>
+    </div>
+
+    <!-- Film grain -->
+    <div class="hero-grain"></div>
+
 </div>
 
-<script>
-window.heroFrameUrls = [
-  {% for i in (1..60) %}
-    {% assign padded = i | prepend: '000' | slice: -3, 3 %}
-    {% assign fname = 'seq-' | append: padded | append: '.jpg' %}
-    {{ fname | asset_url | json }}{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-];
-</script>
-
-<script>
-(function () {
-    var FRAME_COUNT  = 60;
-    var LERP_SPEED   = 0.12;
-    var urls         = window.heroFrameUrls || [];
-    var images       = new Array(FRAME_COUNT);
-    var ready        = new Array(FRAME_COUNT).fill(false);
-    var canvas       = document.getElementById('HeroCanvas');
-    var ctx          = canvas.getContext('2d');
-    var zone         = document.getElementById('hero-scroll-zone');
-    var progressFill = document.getElementById('HeroProgress');
-    var scrollHint   = document.getElementById('HeroScrollHint');
-
-    var targetFrame  = 0;
-    var currentFrame = 0;
-    var rafId        = null;
-    var isAnimating  = false;
-
-    /* ── resize canvas to its CSS pixel size ─────────────────── */
-    function resize() {
-        canvas.width  = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        drawAt(Math.round(currentFrame));
-    }
-
-    /* ── cover-fit draw ───────────────────────────────────────── */
-    function drawAt(idx) {
-        idx = Math.max(0, Math.min(FRAME_COUNT - 1, idx));
-        if (!ready[idx]) return;
-        var img = images[idx];
-        var cw = canvas.width, ch = canvas.height;
-        var iw = img.naturalWidth, ih = img.naturalHeight;
-        if (!iw || !ih) return;
-
-        /* subtle zoom: scale grows from 1.0 → 1.06 as scroll progresses */
-        var progress = currentFrame / (FRAME_COUNT - 1);
-        var zoom = 1 + progress * 0.06;
-        var scale = Math.max(cw / iw, ch / ih) * zoom;
-        var nw = iw * scale, nh = ih * scale;
-        var nx = (cw - nw) / 2, ny = (ch - nh) / 2;
-
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, nx, ny, nw, nh);
-    }
-
-    /* ── smooth lerp animation loop ──────────────────────────── */
-    function tick() {
-        var diff = targetFrame - currentFrame;
-        if (Math.abs(diff) < 0.05) {
-            currentFrame = targetFrame;
-            isAnimating  = false;
-            rafId        = null;
-        } else {
-            currentFrame += diff * LERP_SPEED;
-            rafId = requestAnimationFrame(tick);
-        }
-
-        drawAt(Math.round(currentFrame));
-
-        /* progress bar */
-        var pct = (currentFrame / (FRAME_COUNT - 1)) * 100;
-        if (progressFill) progressFill.style.width = pct.toFixed(1) + '%';
-    }
-
-    function startAnim() {
-        if (!isAnimating) {
-            isAnimating = true;
-            rafId = requestAnimationFrame(tick);
-        }
-    }
-
-    /* ── scroll → target frame ────────────────────────────────── */
-    function onScroll() {
-        var rect        = zone.getBoundingClientRect();
-        var scrolled    = -rect.top;
-        var totalScroll = zone.offsetHeight - window.innerHeight;
-        if (totalScroll <= 0) return;
-
-        var progress = Math.max(0, Math.min(1, scrolled / totalScroll));
-        targetFrame  = progress * (FRAME_COUNT - 1);
-
-        /* hide scroll hint after user starts scrolling */
-        if (scrollHint && progress > 0.02) {
-            scrollHint.style.opacity = '0';
-        } else if (scrollHint && progress <= 0.02) {
-            scrollHint.style.opacity = '1';
-        }
-
-        startAnim();
-    }
-
-    /* ── preload ──────────────────────────────────────────────── */
-    function load(i) {
-        var img   = new Image();
-        img.onload = function () {
-            ready[i] = true;
-            if (i === 0) { resize(); }
-        };
-        img.src   = urls[i];
-        images[i] = img;
-    }
-
-    load(0);
-    for (var i = 1; i < FRAME_COUNT; i++) { (function(idx){ setTimeout(function(){ load(idx); }, idx * 20); })(i); }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', resize);
-    resize();
-})();
-</script>
-
 <style>
-.hero-scroll-zone {
-    height: 260vh;
+/* ── Hero section ──────────────────────────────────────────── */
+.hero-section {
     position: relative;
-}
-
-.hero-canvas-sticky {
-    position: sticky;
-    top: 0;
+    width: 100%;
     height: 100vh;
-    width: 100%;
+    min-height: 560px;
     overflow: hidden;
-    background: #000;
+    background: #07090f;
 }
 
-.hero-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-/* overlay */
-.hero-video-overlay {
+/* Image fills section; JS drives a subtle parallax translateY */
+.hero-img {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.55) 150%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    padding: 3rem;
-    gap: 1rem;
+    width: 100%;
+    height: 115%;   /* extra height so parallax has room */
+    top: -7.5%;
+    object-fit: cover;
+    object-position: center top;
+    will-change: transform;
+    animation: hero-ken-burns 14s ease-in-out infinite alternate;
+}
+
+/* Slow zoom breathe (Ken Burns) */
+@keyframes hero-ken-burns {
+    0%   { transform: scale(1.00) translateY(0); }
+    100% { transform: scale(1.07) translateY(-1%); }
+}
+
+/* When JS parallax is active, animation still adds on top */
+.hero-img.parallax-active {
+    animation-play-state: paused; /* JS takes over motion */
+}
+
+/* Gradient overlay — dark bottom + vignette edges */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center, transparent 45%, rgba(5,7,15,0.55) 100%),
+        linear-gradient(to top, rgba(5,7,15,0.72) 0%, transparent 55%);
     z-index: 2;
     pointer-events: none;
 }
 
-/* film grain */
-.hero-canvas-sticky::after {
-    content: '';
+/* Film-grain texture */
+.hero-grain {
     position: absolute;
     inset: 0;
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.06"/></svg>');
+    z-index: 3;
     pointer-events: none;
-    z-index: 1;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.055"/></svg>');
+    mix-blend-mode: overlay;
 }
 
-/* progress bar */
-.hero-progress-bar {
+/* Text overlay */
+.hero-content {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: rgba(255,255,255,0.15);
-    z-index: 5;
-}
-.hero-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff);
-    border-radius: 0 2px 2px 0;
-    transition: width 0.08s linear;
-}
-
-/* scroll hint */
-.hero-scroll-hint {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255,255,255,0.65);
+    inset: 0;
     z-index: 4;
-    transition: opacity 0.5s ease;
-    animation: hint-bounce 1.8s ease-in-out infinite;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1.25rem;
+    pointer-events: none;
 }
-.hero-scroll-hint i { width: 34px; height: 34px; }
-
-@keyframes hint-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0);    opacity: 0.65; }
-    50%       { transform: translateX(-50%) translateY(10px); opacity: 1;    }
-}
-
-/* overlay text */
-.hero-video-title {
-    font-size: clamp(1.5rem, 4vw, 3rem);
+.hero-title {
+    font-size: clamp(1.6rem, 4vw, 3.2rem);
     font-weight: 900;
-    color: white;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    color: #fff;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.45);
     text-align: right;
     pointer-events: auto;
 }
-.hero-video-subtitle {
+.hero-subtitle {
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.82);
     text-align: right;
     max-width: 400px;
     pointer-events: auto;
 }
-.hero-video-btn {
+.hero-cta {
     display: inline-flex;
     align-items: center;
-    background: white;
+    background: #fff;
     color: var(--text-dark);
     font-weight: 800;
     font-size: 1rem;
@@ -266,33 +139,89 @@ window.heroFrameUrls = [
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     pointer-events: auto;
 }
-.hero-video-btn:hover {
+.hero-cta:hover {
     background: var(--primary);
-    color: white;
+    color: #fff;
     transform: translateY(-2px);
 }
 
+/* Scroll hint */
+.hero-scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    z-index: 5;
+    transition: opacity 0.5s ease;
+    animation: hint-bounce 2s ease-in-out infinite;
+}
+.hero-scroll-hint i,
+.hero-scroll-hint svg { width: 34px; height: 34px; }
+
+@keyframes hint-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);     opacity: 0.6; }
+    50%       { transform: translateX(-50%) translateY(10px);  opacity: 1;   }
+}
+
 @media (max-width: 768px) {
-    .hero-scroll-zone { height: 220vh; }
-    .hero-video-overlay {
+    .hero-content {
         padding: 1.5rem;
         align-items: center;
-        text-align: center;
-        background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
         justify-content: flex-end;
+        padding-bottom: 5rem;
+        text-align: center;
     }
-    .hero-video-subtitle { max-width: 100%; }
+    .hero-subtitle { max-width: 100%; }
 }
 </style>
 
+<script>
+/* ── Parallax ─────────────────────────────────────────────── */
+(function () {
+    var img     = document.getElementById('HeroImage');
+    var section = document.getElementById('HeroSection');
+    var hint    = document.getElementById('HeroScrollHint');
+    if (!img || !section) return;
+
+    var ticking = false;
+
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    }
+
+    function update() {
+        ticking = false;
+        var scrolled = window.scrollY;
+        var sectionH = section.offsetHeight;
+
+        /* Parallax: image moves at 40% of scroll speed */
+        var shift = scrolled * 0.40;
+        img.style.transform = 'scale(1.07) translateY(calc(' + shift + 'px - 1%))';
+        img.classList.add('parallax-active');
+
+        /* Fade out scroll hint */
+        if (hint) {
+            hint.style.opacity = scrolled > 80 ? '0' : '1';
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(); /* run once on load */
+})();
+</script>
+
 {% schema %}
 {
-  "name": "فيديو البطل",
+  "name": "هيرو",
   "settings": [
     {
       "type": "checkbox",
       "id": "show_overlay",
-      "label": "إظهار نص فوق الفيديو",
+      "label": "إظهار نص فوق الصورة",
       "default": false
     },
     {
@@ -320,7 +249,7 @@ window.heroFrameUrls = [
   ],
   "presets": [
     {
-      "name": "فيديو البطل"
+      "name": "هيرو"
     }
   ]
 }
