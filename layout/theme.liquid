@@ -33,11 +33,11 @@
         {% section 'hero-video' %}
     {% endif %}
 
-    <div style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+    <div style="position: relative; z-index: 1; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
         {% section 'category-pills' %}
     </div>
 
-    <main role="main" id="MainContent">
+    <main role="main" id="MainContent" style="position: relative; z-index: 1;">
         {{ content_for_layout }}
     </main>
 

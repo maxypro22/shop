@@ -1,8 +1,5 @@
-<!-- Scroll zone: sticky hero + rising cover panel -->
-<div class="hero-zone" id="HeroZone">
 <div class="hero-section" id="HeroSection">
 
-    <!-- Full-bleed image -->
     <img
         id="HeroImage"
         src="{{ 'hero-image.jpg' | asset_url }}"
@@ -12,15 +9,11 @@
         fetchpriority="high"
     >
 
-    <!-- Gradient overlay -->
     <div class="hero-overlay"></div>
-
-    <!-- Film grain -->
     <div class="hero-grain"></div>
 
-    <!-- Optional text (from theme editor) -->
     {% if section.settings.show_overlay %}
-    <div class="hero-content" id="HeroContent">
+    <div class="hero-content">
         {% if section.settings.title != blank %}
             <h2 class="hero-title">{{ section.settings.title }}</h2>
         {% endif %}
@@ -36,62 +29,52 @@
     </div>
     {% endif %}
 
-    <!-- Scroll hint -->
     <div class="hero-scroll-hint" id="HeroScrollHint">
         <i data-lucide="chevrons-down"></i>
     </div>
 
-    <!-- Rising cover panel — slides up over the image on scroll -->
-    <div class="hero-cover" id="HeroCover"></div>
-
-</div>
 </div>
 
 <style>
-/* ── Scroll zone ─────────────────────────────────────────── */
-.hero-zone {
-    height: 180vh;      /* 180 - 100 = 80vh scroll travel, matches JS threshold */
-    position: relative;
-}
-
-/* ── Sticky hero ─────────────────────────────────────────── */
+/* ── Sticky hero — content sections slide OVER it ─────────── */
 .hero-section {
     position: sticky;
     top: 0;
     height: 100vh;
     min-height: 560px;
+    z-index: 0;          /* category-pills + main have z-index:1, cover this */
     overflow: hidden;
     background: #07090f;
-    will-change: transform;
 }
 
-/* ── Hero image ──────────────────────────────────────────── */
+/* ── Image: wide + tall for parallax room ─────────────────── */
 .hero-img {
     position: absolute;
     inset: 0;
     width: 100%;
-    height: 112%;
-    top: -6%;
+    height: 118%;
+    top: -9%;
     object-fit: cover;
     object-position: center top;
     will-change: transform;
-    animation: hero-breathe 14s ease-in-out infinite alternate;
+    /* Ken Burns — paused by JS once scroll starts */
+    animation: hero-breathe 13s ease-in-out infinite alternate;
 }
 @keyframes hero-breathe {
-    0%   { transform: scale(1.00); }
-    100% { transform: scale(1.06); }
+    0%   { transform: scale(1.0); }
+    100% { transform: scale(1.07); }
 }
-.hero-img.js-parallax { animation-play-state: paused; }
+.hero-img.js-active { animation-play-state: paused; }
 
-/* ── Overlays ────────────────────────────────────────────── */
+/* ── Overlays ──────────────────────────────────────────────── */
 .hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
     pointer-events: none;
     background:
-        radial-gradient(ellipse at center, transparent 40%, rgba(5,7,15,0.5) 100%),
-        linear-gradient(to top, rgba(5,7,15,0.65) 0%, transparent 50%);
+        radial-gradient(ellipse at center, transparent 38%, rgba(5,7,15,0.52) 100%),
+        linear-gradient(to top, rgba(5,7,15,0.68) 0%, transparent 55%);
 }
 .hero-grain {
     position: absolute;
@@ -102,7 +85,7 @@
     background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.055"/></svg>');
 }
 
-/* ── Text content ────────────────────────────────────────── */
+/* ── Hero text ─────────────────────────────────────────────── */
 .hero-content {
     position: absolute;
     inset: 0;
@@ -120,13 +103,11 @@
     font-weight: 900;
     color: #fff;
     text-shadow: 0 2px 16px rgba(0,0,0,0.5);
-    text-align: right;
     pointer-events: auto;
 }
 .hero-subtitle {
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     color: rgba(255,255,255,0.82);
-    text-align: right;
     max-width: 400px;
     pointer-events: auto;
 }
@@ -146,7 +127,7 @@
 }
 .hero-cta:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
 
-/* ── Scroll hint ─────────────────────────────────────────── */
+/* ── Scroll hint ───────────────────────────────────────────── */
 .hero-scroll-hint {
     position: absolute;
     bottom: 2.5rem;
@@ -164,76 +145,44 @@
     50%       { transform: translateX(-50%) translateY(10px); opacity: 1;   }
 }
 
-/* ── Rising cover panel ──────────────────────────────────── */
-.hero-cover {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;       /* slight overlap prevents sub-pixel gap */
-    height: 100%;
-    background: var(--bg-main);
-    border-radius: 28px 28px 0 0;
-    transform: translateY(100%); /* starts fully below viewport */
-    will-change: transform;
-    z-index: 9;
-    /* shadow on top edge creates depth as it rises */
-    box-shadow: 0 -16px 60px rgba(0,0,0,0.22);
-}
-
-/* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .hero-zone { height: 180vh; }
     .hero-content {
         padding: 1.5rem 1.5rem 5rem;
         align-items: center;
         justify-content: flex-end;
     }
     .hero-subtitle { max-width: 100%; }
-    .hero-cover { border-radius: 20px 20px 0 0; }
 }
 </style>
 
 <script>
+/* ── Parallax: image zooms & shifts as content slides over ── */
 (function () {
-    var img   = document.getElementById('HeroImage');
-    var cover = document.getElementById('HeroCover');
-    var hint  = document.getElementById('HeroScrollHint');
-    var zone  = document.getElementById('HeroZone');
-    if (!img || !cover || !zone) return;
+    var img  = document.getElementById('HeroImage');
+    var hint = document.getElementById('HeroScrollHint');
+    if (!img) return;
 
     var ticking = false;
 
-    /* smooth-step easing: slow start, slow end */
-    function smoothStep(t) {
-        return t * t * (3 - 2 * t);
-    }
-
     function update() {
-        ticking = false;
-        var scrolled  = window.scrollY;
-        var viewH     = window.innerHeight;
+        ticking   = false;
+        var sy    = window.scrollY;
+        var viewH = window.innerHeight;
+        var p     = Math.min(1, sy / viewH);          /* 0 → 1 over one viewport */
 
-        /* Progress 0 → 1 over the first 80vh of scroll */
-        var raw      = Math.max(0, Math.min(1, scrolled / (viewH * 0.80)));
-        var progress = smoothStep(raw);
+        /* Image zooms from 1.02 → 1.12 and drifts up — depth illusion */
+        var scale = 1.02 + p * 0.10;
+        var shift = -(p * 8);                          /* up to -8% upward */
+        img.style.transform = 'scale(' + scale.toFixed(4) + ') translateY(' + shift.toFixed(2) + '%)';
+        img.classList.add('js-active');
 
-        /* Cover rises from translateY(100%) → translateY(0%) */
-        cover.style.transform = 'translateY(' + ((1 - progress) * 100) + '%)';
-
-        /* Image gentle parallax: shifts up slightly as cover rises */
-        var imgShift = -progress * 7;  /* -7% max upward shift */
-        img.style.transform = 'scale(1.06) translateY(' + imgShift + '%)';
-        img.classList.add('js-parallax');
-
-        /* Fade hint early */
-        if (hint) hint.style.opacity = raw > 0.08 ? '0' : '1';
+        if (hint) hint.style.opacity = sy > 80 ? '0' : '1';
     }
 
-    function onScroll() {
+    window.addEventListener('scroll', function () {
         if (!ticking) { requestAnimationFrame(update); ticking = true; }
-    }
+    }, { passive: true });
 
-    window.addEventListener('scroll', onScroll, { passive: true });
     update();
 })();
 </script>
