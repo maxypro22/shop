@@ -1,17 +1,7 @@
-<div class="hero-video-section">
-    <div class="hero-video-wrapper">
-        <video 
-            id="HeroVideo"
-            class="hero-video" 
-            autoplay 
-            muted 
-            loop 
-            playsinline
-            preload="auto"
-            poster="{{ 'custom-logo.jpg' | asset_url }}"
-        >
-            <source src="{{ 'hero-video.mp4' | asset_url }}" type="video/mp4">
-        </video>
+<div id="hero-scroll-zone" class="hero-scroll-zone">
+    <div class="hero-canvas-sticky">
+
+        <canvas id="HeroCanvas" class="hero-canvas"></canvas>
 
         {% if section.settings.show_overlay %}
         <div class="hero-video-overlay">
@@ -29,41 +19,124 @@
             {% endif %}
         </div>
         {% endif %}
+
+        <div class="hero-scroll-hint">
+            <i data-lucide="chevrons-down"></i>
+        </div>
+
     </div>
 </div>
 
-<style>
-.hero-video-section {
-    width: 100%;
-    background: #000;
-    overflow: hidden;
-}
+<script>
+window.heroFrameUrls = [
+  {% for i in (1..48) %}
+    {% assign padded = i | prepend: '000' | slice: -3, 3 %}
+    {% assign fname = 'seq-' | append: padded | append: '.jpg' %}
+    {{ fname | asset_url | json }}{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+</script>
 
-.hero-video-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/7;
-    overflow: hidden;
-}
+<script>
+(function () {
+    var FRAME_COUNT = 48;
+    var urls        = window.heroFrameUrls || [];
+    var images      = new Array(FRAME_COUNT);
+    var ready       = new Array(FRAME_COUNT).fill(false);
+    var canvas      = document.getElementById('HeroCanvas');
+    var ctx         = canvas.getContext('2d');
+    var zone        = document.getElementById('hero-scroll-zone');
+    var currentIdx  = 0;
+    var raf         = null;
 
-@media (max-width: 768px) {
-    .hero-video-wrapper {
-        aspect-ratio: 16/9;
+    /* ── resize canvas to its CSS size ───────────────────────── */
+    function resize() {
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        draw(currentIdx);
     }
+
+    /* ── draw a single frame, cover-fit ──────────────────────── */
+    function draw(idx) {
+        if (!ready[idx]) return;
+        var img = images[idx];
+        var cw  = canvas.width,  ch  = canvas.height;
+        var iw  = img.naturalWidth || img.width;
+        var ih  = img.naturalHeight || img.height;
+        if (!iw || !ih) return;
+        var scale = Math.max(cw / iw, ch / ih);
+        var nw = iw * scale, nh = ih * scale;
+        var nx = (cw - nw) / 2,  ny = (ch - nh) / 2;
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(img, nx, ny, nw, nh);
+        currentIdx = idx;
+    }
+
+    /* ── scroll → frame index ─────────────────────────────────── */
+    function getFrame() {
+        var rect        = zone.getBoundingClientRect();
+        var scrolled    = -rect.top;
+        var totalScroll = zone.offsetHeight - window.innerHeight;
+        if (totalScroll <= 0) return 0;
+        var progress = Math.max(0, Math.min(1, scrolled / totalScroll));
+        return Math.round(progress * (FRAME_COUNT - 1));
+    }
+
+    function onScroll() {
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+            draw(getFrame());
+            raf = null;
+        });
+    }
+
+    /* ── preload all frames ───────────────────────────────────── */
+    function load(i) {
+        var img = new Image();
+        img.onload = function () {
+            ready[i] = true;
+            if (i === 0) { resize(); }
+        };
+        img.src    = urls[i];
+        images[i]  = img;
+    }
+
+    /* load first frame right away, rest in order */
+    load(0);
+    for (var i = 1; i < FRAME_COUNT; i++) { load(i); }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', resize);
+    resize();
+})();
+</script>
+
+<style>
+.hero-scroll-zone {
+    height: 220vh;
+    position: relative;
 }
 
-.hero-video {
-    position: absolute;
-    top: 0; left: 0;
+.hero-canvas-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+.hero-canvas {
+    display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
 }
 
+/* keep overlay & effects from original */
 .hero-video-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.6) 150%);
+    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.55) 150%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -71,13 +144,14 @@
     padding: 3rem;
     gap: 1rem;
     z-index: 2;
+    pointer-events: none;
 }
 
-.hero-video-wrapper::after {
+.hero-canvas-sticky::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.08"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.07"/></svg>');
     pointer-events: none;
     z-index: 1;
 }
@@ -88,6 +162,7 @@
     color: white;
     text-shadow: 0 2px 12px rgba(0,0,0,0.4);
     text-align: right;
+    pointer-events: auto;
 }
 
 .hero-video-subtitle {
@@ -95,6 +170,7 @@
     color: rgba(255,255,255,0.85);
     text-align: right;
     max-width: 400px;
+    pointer-events: auto;
 }
 
 .hero-video-btn {
@@ -109,6 +185,7 @@
     text-decoration: none;
     transition: var(--transition);
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    pointer-events: auto;
 }
 
 .hero-video-btn:hover {
@@ -117,7 +194,26 @@
     transform: translateY(-2px);
 }
 
+/* scroll hint arrow */
+.hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    z-index: 3;
+    animation: hint-bounce 1.8s ease-in-out infinite;
+}
+
+.hero-scroll-hint i { width: 32px; height: 32px; }
+
+@keyframes hint-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.6; }
+    50%       { transform: translateX(-50%) translateY(8px); opacity: 1;   }
+}
+
 @media (max-width: 768px) {
+    .hero-scroll-zone { height: 200vh; }
     .hero-video-overlay {
         padding: 1.5rem;
         align-items: center;
