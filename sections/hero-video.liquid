@@ -20,8 +20,14 @@
         </div>
         {% endif %}
 
-        <div class="hero-scroll-hint">
+        <!-- scroll hint -->
+        <div class="hero-scroll-hint" id="HeroScrollHint">
             <i data-lucide="chevrons-down"></i>
+        </div>
+
+        <!-- progress bar -->
+        <div class="hero-progress-bar">
+            <div class="hero-progress-fill" id="HeroProgress"></div>
         </div>
 
     </div>
@@ -29,7 +35,7 @@
 
 <script>
 window.heroFrameUrls = [
-  {% for i in (1..48) %}
+  {% for i in (1..60) %}
     {% assign padded = i | prepend: '000' | slice: -3, 3 %}
     {% assign fname = 'seq-' | append: padded | append: '.jpg' %}
     {{ fname | asset_url | json }}{% unless forloop.last %},{% endunless %}
@@ -39,71 +45,108 @@ window.heroFrameUrls = [
 
 <script>
 (function () {
-    var FRAME_COUNT = 48;
-    var urls        = window.heroFrameUrls || [];
-    var images      = new Array(FRAME_COUNT);
-    var ready       = new Array(FRAME_COUNT).fill(false);
-    var canvas      = document.getElementById('HeroCanvas');
-    var ctx         = canvas.getContext('2d');
-    var zone        = document.getElementById('hero-scroll-zone');
-    var currentIdx  = 0;
-    var raf         = null;
+    var FRAME_COUNT  = 60;
+    var LERP_SPEED   = 0.12;
+    var urls         = window.heroFrameUrls || [];
+    var images       = new Array(FRAME_COUNT);
+    var ready        = new Array(FRAME_COUNT).fill(false);
+    var canvas       = document.getElementById('HeroCanvas');
+    var ctx          = canvas.getContext('2d');
+    var zone         = document.getElementById('hero-scroll-zone');
+    var progressFill = document.getElementById('HeroProgress');
+    var scrollHint   = document.getElementById('HeroScrollHint');
 
-    /* ── resize canvas to its CSS size ───────────────────────── */
+    var targetFrame  = 0;
+    var currentFrame = 0;
+    var rafId        = null;
+    var isAnimating  = false;
+
+    /* ── resize canvas to its CSS pixel size ─────────────────── */
     function resize() {
         canvas.width  = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-        draw(currentIdx);
+        drawAt(Math.round(currentFrame));
     }
 
-    /* ── draw a single frame, cover-fit ──────────────────────── */
-    function draw(idx) {
+    /* ── cover-fit draw ───────────────────────────────────────── */
+    function drawAt(idx) {
+        idx = Math.max(0, Math.min(FRAME_COUNT - 1, idx));
         if (!ready[idx]) return;
         var img = images[idx];
-        var cw  = canvas.width,  ch  = canvas.height;
-        var iw  = img.naturalWidth || img.width;
-        var ih  = img.naturalHeight || img.height;
+        var cw = canvas.width, ch = canvas.height;
+        var iw = img.naturalWidth, ih = img.naturalHeight;
         if (!iw || !ih) return;
-        var scale = Math.max(cw / iw, ch / ih);
+
+        /* subtle zoom: scale grows from 1.0 → 1.06 as scroll progresses */
+        var progress = currentFrame / (FRAME_COUNT - 1);
+        var zoom = 1 + progress * 0.06;
+        var scale = Math.max(cw / iw, ch / ih) * zoom;
         var nw = iw * scale, nh = ih * scale;
-        var nx = (cw - nw) / 2,  ny = (ch - nh) / 2;
+        var nx = (cw - nw) / 2, ny = (ch - nh) / 2;
+
         ctx.clearRect(0, 0, cw, ch);
         ctx.drawImage(img, nx, ny, nw, nh);
-        currentIdx = idx;
     }
 
-    /* ── scroll → frame index ─────────────────────────────────── */
-    function getFrame() {
+    /* ── smooth lerp animation loop ──────────────────────────── */
+    function tick() {
+        var diff = targetFrame - currentFrame;
+        if (Math.abs(diff) < 0.05) {
+            currentFrame = targetFrame;
+            isAnimating  = false;
+            rafId        = null;
+        } else {
+            currentFrame += diff * LERP_SPEED;
+            rafId = requestAnimationFrame(tick);
+        }
+
+        drawAt(Math.round(currentFrame));
+
+        /* progress bar */
+        var pct = (currentFrame / (FRAME_COUNT - 1)) * 100;
+        if (progressFill) progressFill.style.width = pct.toFixed(1) + '%';
+    }
+
+    function startAnim() {
+        if (!isAnimating) {
+            isAnimating = true;
+            rafId = requestAnimationFrame(tick);
+        }
+    }
+
+    /* ── scroll → target frame ────────────────────────────────── */
+    function onScroll() {
         var rect        = zone.getBoundingClientRect();
         var scrolled    = -rect.top;
         var totalScroll = zone.offsetHeight - window.innerHeight;
-        if (totalScroll <= 0) return 0;
+        if (totalScroll <= 0) return;
+
         var progress = Math.max(0, Math.min(1, scrolled / totalScroll));
-        return Math.round(progress * (FRAME_COUNT - 1));
+        targetFrame  = progress * (FRAME_COUNT - 1);
+
+        /* hide scroll hint after user starts scrolling */
+        if (scrollHint && progress > 0.02) {
+            scrollHint.style.opacity = '0';
+        } else if (scrollHint && progress <= 0.02) {
+            scrollHint.style.opacity = '1';
+        }
+
+        startAnim();
     }
 
-    function onScroll() {
-        if (raf) return;
-        raf = requestAnimationFrame(function () {
-            draw(getFrame());
-            raf = null;
-        });
-    }
-
-    /* ── preload all frames ───────────────────────────────────── */
+    /* ── preload ──────────────────────────────────────────────── */
     function load(i) {
-        var img = new Image();
+        var img   = new Image();
         img.onload = function () {
             ready[i] = true;
             if (i === 0) { resize(); }
         };
-        img.src    = urls[i];
-        images[i]  = img;
+        img.src   = urls[i];
+        images[i] = img;
     }
 
-    /* load first frame right away, rest in order */
     load(0);
-    for (var i = 1; i < FRAME_COUNT; i++) { load(i); }
+    for (var i = 1; i < FRAME_COUNT; i++) { (function(idx){ setTimeout(function(){ load(idx); }, idx * 20); })(i); }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', resize);
@@ -113,7 +156,7 @@ window.heroFrameUrls = [
 
 <style>
 .hero-scroll-zone {
-    height: 220vh;
+    height: 260vh;
     position: relative;
 }
 
@@ -132,7 +175,7 @@ window.heroFrameUrls = [
     height: 100%;
 }
 
-/* keep overlay & effects from original */
+/* overlay */
 .hero-video-overlay {
     position: absolute;
     inset: 0;
@@ -147,15 +190,53 @@ window.heroFrameUrls = [
     pointer-events: none;
 }
 
+/* film grain */
 .hero-canvas-sticky::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.07"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.06"/></svg>');
     pointer-events: none;
     z-index: 1;
 }
 
+/* progress bar */
+.hero-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    z-index: 5;
+}
+.hero-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.4), #ffffff);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.08s linear;
+}
+
+/* scroll hint */
+.hero-scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.65);
+    z-index: 4;
+    transition: opacity 0.5s ease;
+    animation: hint-bounce 1.8s ease-in-out infinite;
+}
+.hero-scroll-hint i { width: 34px; height: 34px; }
+
+@keyframes hint-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0);    opacity: 0.65; }
+    50%       { transform: translateX(-50%) translateY(10px); opacity: 1;    }
+}
+
+/* overlay text */
 .hero-video-title {
     font-size: clamp(1.5rem, 4vw, 3rem);
     font-weight: 900;
@@ -164,7 +245,6 @@ window.heroFrameUrls = [
     text-align: right;
     pointer-events: auto;
 }
-
 .hero-video-subtitle {
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     color: rgba(255,255,255,0.85);
@@ -172,11 +252,10 @@ window.heroFrameUrls = [
     max-width: 400px;
     pointer-events: auto;
 }
-
 .hero-video-btn {
     display: inline-flex;
     align-items: center;
-    background-color: white;
+    background: white;
     color: var(--text-dark);
     font-weight: 800;
     font-size: 1rem;
@@ -187,33 +266,14 @@ window.heroFrameUrls = [
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     pointer-events: auto;
 }
-
 .hero-video-btn:hover {
-    background-color: var(--primary);
+    background: var(--primary);
     color: white;
     transform: translateY(-2px);
 }
 
-/* scroll hint arrow */
-.hero-scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255,255,255,0.6);
-    z-index: 3;
-    animation: hint-bounce 1.8s ease-in-out infinite;
-}
-
-.hero-scroll-hint i { width: 32px; height: 32px; }
-
-@keyframes hint-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.6; }
-    50%       { transform: translateX(-50%) translateY(8px); opacity: 1;   }
-}
-
 @media (max-width: 768px) {
-    .hero-scroll-zone { height: 200vh; }
+    .hero-scroll-zone { height: 220vh; }
     .hero-video-overlay {
         padding: 1.5rem;
         align-items: center;
