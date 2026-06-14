@@ -82,8 +82,30 @@
                 {% endfor %}
                 
                 {% if paginate.pages > 1 %}
-                    <div class="pagination" style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 2rem;">
-                        {{ paginate | default_pagination }}
+                    <div class="pagination-wrapper">
+                        <nav class="pagination">
+                            <div class="pagination-pages">
+                                {% for part in paginate.parts %}
+                                    {% if part.is_link %}
+                                        <a href="{{ part.url }}" class="pagination-item">{{ part.title }}</a>
+                                    {% else %}
+                                        {% assign part_num = part.title | plus: 0 %}
+                                        {% if part_num > 0 %}
+                                            <span class="pagination-item active">{{ part.title }}</span>
+                                        {% else %}
+                                            <span class="pagination-item ellipsis">…</span>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% if paginate.next %}
+                                <a href="{{ paginate.next.url }}" class="pagination-next">
+                                    التالي <i data-lucide="chevron-right"></i>
+                                </a>
+                            {% else %}
+                                <span class="pagination-next disabled">التالي <i data-lucide="chevron-right"></i></span>
+                            {% endif %}
+                        </nav>
                     </div>
                 {% endif %}
             {% endpaginate %}
