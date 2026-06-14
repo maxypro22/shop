@@ -362,26 +362,28 @@ button {
 }
 
 .custom-checkbox {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border: 2px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
+    flex-shrink: 0;
+    background-color: transparent;
 }
 
 .custom-checkbox i {
     width: 14px;
     height: 14px;
-    color: white;
+    color: var(--primary);
     opacity: 0;
     transition: var(--transition);
 }
 
 .brand-item input:checked + .custom-checkbox {
-    background-color: var(--primary);
+    background-color: var(--primary-light);
     border-color: var(--primary);
 }
 
@@ -644,8 +646,9 @@ button {
 
 /* Dynamic Filter Styles */
 .price-range-inputs { display: flex; gap: 1rem; margin-top: 1rem; }
-.price-input-wrapper { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-main); padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); flex: 1; }
-.price-input-wrapper input { border: none; background: transparent; width: 100%; outline: none; font-family: inherit; }
+.price-input-wrapper { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); flex: 1; }
+.price-input-wrapper span { font-size: 0.9rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+.price-input-wrapper input { border: none; background: transparent; width: 100%; outline: none; font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text-dark); min-width: 0; }
 .filter-form { display: flex; flex-direction: column; gap: 1.5rem; }
 
 /* Product Page Layout */
