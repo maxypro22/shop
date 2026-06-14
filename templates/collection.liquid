@@ -1,9 +1,30 @@
-<div class="main-container" style="padding-top: 2rem;">
-    <h1 style="margin-bottom: 2rem; font-size: 2rem;">{{ collection.title }}</h1>
-    
-    <!-- Mobile filter toggle (hidden on desktop via CSS) -->
+<!-- ── Collection Banner ──────────────────────────────────── -->
+<div class="coll-banner">
+    <div class="coll-banner-bg"></div>
+    <div class="coll-banner-inner main-container">
+        <nav class="coll-breadcrumb">
+            <a href="/">الرئيسية</a>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <span>{{ collection.title }}</span>
+        </nav>
+        <h1 class="coll-title">{{ collection.title }}</h1>
+        <p class="coll-meta">
+            {% if collection.description != blank %}
+                {{ collection.description | strip_html | truncate: 100 }}
+            {% else %}
+                {{ collection.products_count }} منتج متاح
+            {% endif %}
+        </p>
+    </div>
+    <div class="coll-banner-curve"></div>
+</div>
+
+<!-- ── Main Content ──────────────────────────────────────── -->
+<div class="main-container coll-body">
+
+    <!-- Mobile filter toggle -->
     <button class="mobile-filter-btn" id="MobileFilterBtn" onclick="toggleMobileFilters()">
-        <i data-lucide="sliders-horizontal"></i>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
         <span id="MobileFilterLabel">الفلاتر والسعر</span>
     </button>
 
@@ -80,14 +101,17 @@
         </aside>
 
         <!-- Product Grid -->
-        <div class="product-grid">
+        <div class="product-grid" id="CollProductGrid">
             {% paginate collection.products by 12 %}
                 {% for product in collection.products %}
                     {% include 'product-card', product: product %}
                 {% else %}
-                    <p>لا توجد منتجات في هذا القسم.</p>
+                    <div class="coll-empty">
+                        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <p>لا توجد منتجات في هذا القسم</p>
+                    </div>
                 {% endfor %}
-                
+
                 {% if paginate.pages > 1 %}
                     <div class="pagination-wrapper">
                         <nav class="pagination">
@@ -119,10 +143,145 @@
         </div>
     </div>
 </div>
+
+<style>
+/* ── Collection Banner ────────────────────────────────────── */
+.coll-banner {
+    position: relative;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
+    padding: 3.5rem 0 4rem;
+    overflow: hidden;
+}
+.coll-banner-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 50%, rgba(108,92,231,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 30%, rgba(162,155,254,0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+/* Decorative grid */
+.coll-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+.coll-banner-inner {
+    position: relative;
+    z-index: 2;
+    text-align: right;
+}
+/* Curved bottom edge */
+.coll-banner-curve {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3rem;
+    background: var(--bg-main);
+    border-radius: 2rem 2rem 0 0;
+    z-index: 3;
+}
+
+/* Breadcrumb */
+.coll-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+    animation: coll-fade-up 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+.coll-breadcrumb a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.coll-breadcrumb a:hover { color: rgba(255,255,255,0.85); }
+.coll-breadcrumb svg { opacity: 0.35; }
+
+/* Title */
+.coll-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 0.75rem;
+    line-height: 1.15;
+    animation: coll-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.08s both;
+}
+/* Gradient underline accent */
+.coll-title::after {
+    content: '';
+    display: block;
+    width: 3.5rem;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary, #0f172a), #6C5CE7);
+    border-radius: 3px;
+    margin-top: 0.6rem;
+    margin-right: auto;
+    animation: coll-line-grow 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+.coll-meta {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 500px;
+    animation: coll-fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.16s both;
+}
+
+/* Entrance keyframes */
+@keyframes coll-fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes coll-line-grow {
+    from { opacity: 0; transform: scaleX(0); transform-origin: right; }
+    to   { opacity: 1; transform: scaleX(1); transform-origin: right; }
+}
+
+/* ── Body spacing ─────────────────────────────────────────── */
+.coll-body {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.coll-empty {
+    grid-column: 1 / -1;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.coll-empty svg { opacity: 0.3; }
+.coll-empty p { font-size: 1.1rem; }
+
+/* ── Stagger product cards entrance ─────────────────────────
+   The scroll-reveal in script.js handles this, but add a
+   base transition so even non-reveal cards animate nicely   */
+#CollProductGrid .product-card {
+    animation: coll-card-in 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+{% for i in (1..12) %}
+#CollProductGrid .product-card:nth-child({{ i }}) {
+    animation-delay: {{ i | minus: 1 | times: 60 }}ms;
+}
+{% endfor %}
+@keyframes coll-card-in {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+</style>
+
 <script>
-    if(window.lucide) lucide.createIcons();
-    function resetFilters() {
-        alert("تم إعادة ضبط الفلاتر.");
-        // Basic reset logic will be added to script.js
-    }
+    if (window.lucide) lucide.createIcons();
 </script>
