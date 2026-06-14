@@ -118,3 +118,61 @@ document.addEventListener('DOMContentLoaded', function() {
     var modal = document.getElementById('CategoriesModal');
     if (modal) document.body.appendChild(modal);
 });
+
+// Scroll Reveal
+(function () {
+    if (!window.IntersectionObserver) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            observer.unobserve(el);
+            el.classList.add('revealed');
+            // Remove the reveal class after the transition so hover transforms work normally
+            el.addEventListener('transitionend', function cleanup() {
+                el.classList.remove('reveal');
+                el.style.transitionDelay = '';
+                el.removeEventListener('transitionend', cleanup);
+            });
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    function addReveal(el, delayMs) {
+        if (el.classList.contains('reveal')) return;
+        el.classList.add('reveal');
+        if (delayMs) el.style.transitionDelay = delayMs + 'ms';
+        observer.observe(el);
+    }
+
+    function setupReveals() {
+        // Stagger children inside grids (product cards, best seller cards, feature cards)
+        document.querySelectorAll('.product-grid, .bs-grid, .features-grid').forEach(function (grid) {
+            Array.from(grid.children).forEach(function (child, i) {
+                addReveal(child, i * 90);
+            });
+        });
+
+        // Individual section-level reveals
+        [
+            '.bs-header',
+            '.features-header',
+            '.filter-section',
+            '.section-title',
+            '.product-gallery',
+            '.product-info',
+            '.app-download-wrapper',
+            '.pagination-wrapper'
+        ].forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (el) {
+                addReveal(el, 0);
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupReveals);
+    } else {
+        setupReveals();
+    }
+})();
