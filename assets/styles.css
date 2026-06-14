@@ -374,7 +374,8 @@ button {
     background-color: #ffffff;
 }
 
-.custom-checkbox i {
+.custom-checkbox i,
+.custom-checkbox svg {
     width: 16px;
     height: 16px;
     color: var(--primary);
@@ -383,7 +384,8 @@ button {
     transition: var(--transition);
 }
 
-.brand-item input:checked + .custom-checkbox i {
+.brand-item input:checked + .custom-checkbox i,
+.brand-item input:checked + .custom-checkbox svg {
     opacity: 1;
 }
 
