@@ -50,7 +50,7 @@
 <style>
 /* ── Scroll zone ─────────────────────────────────────────── */
 .hero-zone {
-    height: 190vh;      /* extra height creates the scroll travel */
+    height: 180vh;      /* 180 - 100 = 80vh scroll travel, matches JS threshold */
     position: relative;
 }
 
@@ -182,7 +182,7 @@
 
 /* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .hero-zone { height: 170vh; }
+    .hero-zone { height: 180vh; }
     .hero-content {
         padding: 1.5rem 1.5rem 5rem;
         align-items: center;
