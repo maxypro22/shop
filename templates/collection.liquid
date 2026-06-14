@@ -1,9 +1,15 @@
 <div class="main-container" style="padding-top: 2rem;">
     <h1 style="margin-bottom: 2rem; font-size: 2rem;">{{ collection.title }}</h1>
     
+    <!-- Mobile filter toggle (hidden on desktop via CSS) -->
+    <button class="mobile-filter-btn" id="MobileFilterBtn" onclick="toggleMobileFilters()">
+        <i data-lucide="sliders-horizontal"></i>
+        <span id="MobileFilterLabel">الفلاتر والسعر</span>
+    </button>
+
     <div class="content-wrapper">
         <!-- Sidebar Filters -->
-        <aside class="sidebar-filters">
+        <aside class="sidebar-filters" id="SidebarFilters">
             <form id="CollectionFiltersForm" class="filter-form">
                 {% if collection.sort_by %}
                     <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">

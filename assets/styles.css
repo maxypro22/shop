@@ -643,9 +643,55 @@ button {
     .content-wrapper {
         grid-template-columns: 1fr;
     }
-    
+
+    /* ── Mobile filter toggle button ── */
+    .mobile-filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.25rem;
+        background: var(--bg-card);
+        border: 1.5px solid var(--border-color);
+        border-radius: var(--radius-full);
+        font-family: var(--font-family);
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        cursor: pointer;
+        margin-bottom: 1rem;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+    .mobile-filter-btn:hover,
+    .mobile-filter-btn.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+    }
+    .mobile-filter-btn svg,
+    .mobile-filter-btn i { width: 18px; height: 18px; }
+
+    /* ── Sidebar hidden by default, slides open ── */
     .sidebar-filters {
-        display: none; /* In a real app, this would be a toggleable drawer */
+        display: flex;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.3s ease,
+                    padding 0.3s ease;
+        opacity: 0;
+        padding: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    .sidebar-filters.filters-open {
+        max-height: 1200px;
+        opacity: 1;
+        padding-bottom: 1rem;
+    }
+    .sidebar-filters .filter-section {
+        flex: 1 1 280px;
     }
 }
 

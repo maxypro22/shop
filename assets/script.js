@@ -41,6 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Mobile filter panel toggle
+window.toggleMobileFilters = function() {
+    var sidebar = document.getElementById('SidebarFilters');
+    var btn     = document.getElementById('MobileFilterBtn');
+    var label   = document.getElementById('MobileFilterLabel');
+    if (!sidebar) return;
+    var isOpen = sidebar.classList.toggle('filters-open');
+    if (btn)   btn.classList.toggle('active', isOpen);
+    if (label) label.textContent = isOpen ? 'إخفاء الفلاتر' : 'الفلاتر والسعر';
+};
+
 // Interactive Filter Reset
 window.resetFilters = function() {
     const checkboxes = document.querySelectorAll('.brand-list input[type="checkbox"]');
