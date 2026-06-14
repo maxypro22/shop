@@ -81,10 +81,16 @@
         </div>
     </div>
 
+    <!-- Recently Viewed -->
+    <div id="recently-viewed-section" class="related-products" style="display:none;">
+        <h2 class="section-title">شاهدت مؤخراً</h2>
+        <div class="product-grid" id="recently-viewed-grid"></div>
+    </div>
+
     <!-- Related Products -->
     {% assign current_product = product %}
     {% assign related_collection = product.collections.first %}
-    
+
     {% if related_collection and related_collection.products_count > 1 %}
     <div class="related-products">
         <h2 class="section-title">قد يعجبك أيضاً</h2>
@@ -104,7 +110,68 @@
 
 <script>
     if(window.lucide) lucide.createIcons();
-    
+
     // Pass product options array to JS
     window.productVariants = {{ product.variants | json }};
+
+    // Recently Viewed
+    (function() {
+        var STORAGE_KEY = 'rv_products';
+        var CURRENCY    = 'ر.ق'; // ر.ق
+
+        var current = {
+            handle: {{ product.handle | json }},
+            title:  {{ product.title | json }},
+            cents:  {{ product.price }},
+            image:  {{ product.featured_image.src | img_url: '600x600', crop: 'center' | json }},
+            url:    {{ product.url | json }}
+        };
+
+        // Load, dedupe, prepend current, trim
+        var viewed = [];
+        try { viewed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) {}
+        viewed = viewed.filter(function(p) { return p.handle !== current.handle; });
+        viewed.unshift(current);
+        if (viewed.length > 8) viewed = viewed.slice(0, 8);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(viewed)); } catch(e) {}
+
+        // Render (skip current product)
+        var toShow = viewed.filter(function(p) { return p.handle !== current.handle; }).slice(0, 4);
+        if (toShow.length === 0) return;
+
+        var section = document.getElementById('recently-viewed-section');
+        var grid    = document.getElementById('recently-viewed-grid');
+        if (!section || !grid) return;
+
+        toShow.forEach(function(p) {
+            var price = (p.cents / 100).toFixed(2) + ' ' + CURRENCY;
+            var card  = document.createElement('article');
+            card.className = 'product-card';
+            card.innerHTML =
+                '<div class="card-image">' +
+                    '<a href="' + p.url + '" class="product-image-link">' +
+                        '<img src="' + p.image + '" alt="' + p.title.replace(/"/g, '&quot;') + '" loading="lazy" class="primary-image">' +
+                    '</a>' +
+                '</div>' +
+                '<div class="card-content">' +
+                    '<a href="' + p.url + '" style="text-decoration:none;color:inherit;flex:1;">' +
+                        '<h3 class="product-title">' + p.title + '</h3>' +
+                    '</a>' +
+                    '<div class="product-price-wrapper" style="margin-bottom:1rem;font-weight:800;color:var(--primary);">' +
+                        '<span>' + price + '</span>' +
+                    '</div>' +
+                    '<div class="card-footer">' +
+                        '<div class="card-actions-grid">' +
+                            '<a href="' + p.url + '" class="btn-action view-product" style="flex:1;">' +
+                                '<span>عرض المنتج</span>' +
+                            '</a>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            grid.appendChild(card);
+        });
+
+        section.style.display = 'block';
+        if (window.lucide) lucide.createIcons();
+    })();
 </script>

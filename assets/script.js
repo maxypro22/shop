@@ -23,61 +23,98 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add to cart animation
     const cartBtns = document.querySelectorAll('.add-cart-btn');
     const cartBadge = document.querySelector('.cart-badge');
-    
+
     cartBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Simple animation effect
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = 'scale(1)';
-            }, 150);
 
-            // Increment cart
-            let currentCount = parseInt(cartBadge.innerText);
-            cartBadge.innerText = currentCount + 1;
-            
-            // Highlight cart icon
-            cartBadge.parentElement.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                cartBadge.parentElement.style.transform = 'scale(1)';
-            }, 300);
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+
+            if (cartBadge) {
+                let currentCount = parseInt(cartBadge.innerText) || 0;
+                cartBadge.innerText = currentCount + 1;
+                cartBadge.parentElement.style.transform = 'scale(1.2)';
+                setTimeout(() => { cartBadge.parentElement.style.transform = 'scale(1)'; }, 300);
+            }
         });
     });
 });
 
 // Interactive Filter Reset
 window.resetFilters = function() {
-    // Uncheck all brand checkboxes
     const checkboxes = document.querySelectorAll('.brand-list input[type="checkbox"]');
     checkboxes.forEach(cb => cb.checked = false);
-    
-    // Reset slider visually (if applicable)
-    const minThumb = document.querySelector('.slider-thumb.min');
-    const maxThumb = document.querySelector('.slider-thumb.max');
-    const fill = document.querySelector('.slider-fill');
-    
-    if (minThumb && maxThumb && fill) {
-        minThumb.style.right = '0%';
-        maxThumb.style.left = '0%';
-        fill.style.left = '0%';
-        fill.style.right = '0%';
-    }
-    
-    // In a real Shopify OS 2.0 store, this would redirect to the base collection URL to clear filters.
-    // window.location.href = window.location.pathname;
 };
 
 // Product Page JS
-function changeMainImage(thumbnail, newSrc) { document.getElementById('MainProductImage').src = newSrc; document.querySelectorAll('.thumbnail').forEach(function(t) { t.classList.remove('active'); }); thumbnail.classList.add('active'); }
-function adjustQty(amount) { var input = document.getElementById('Quantity'); if(!input) return; var current = parseInt(input.value); var newQty = current + amount; if (newQty >= 1) { input.value = newQty; } }
-function updateVariantSelection() { var radios = document.querySelectorAll('.variant-radio:checked'); var selectedOptions = Array.from(radios).map(radio => radio.value); var select = document.getElementById('ProductSelect'); if(!select || !window.productVariants) return; var matchedVariant = window.productVariants.find(function(variant) { return variant.options.every(function(option, index) { return option === selectedOptions[index]; }); }); var addToCartBtn = document.getElementById('AddToCart'); var addToCartText = document.getElementById('AddToCartText'); var priceElement = document.getElementById('ProductPrice'); if (matchedVariant) { select.value = matchedVariant.id; var formatMoney = function(cents) { return (cents / 100).toFixed(2) + ' Ñ.Ş'; }; if(priceElement && matchedVariant.price) { priceElement.innerText = formatMoney(matchedVariant.price); } if (matchedVariant.available) { addToCartBtn.disabled = false; addToCartText.innerText = 'ÅÖÇİÉ Åáì ÇáÓáÉ'; } else { addToCartBtn.disabled = true; addToCartText.innerText = 'äİÏÊ ÇáßãíÉ'; } } else { addToCartBtn.disabled = true; addToCartText.innerText = 'ÛíÑ ãÊæİÑ'; } }
-document.addEventListener('DOMContentLoaded', function() { if(document.querySelector('.variant-radio')) { updateVariantSelection(); } });
+function changeMainImage(thumbnail, newSrc) {
+    document.getElementById('MainProductImage').src = newSrc;
+    document.querySelectorAll('.thumbnail').forEach(function(t) { t.classList.remove('active'); });
+    thumbnail.classList.add('active');
+}
+
+function adjustQty(amount) {
+    var input = document.getElementById('Quantity');
+    if (!input) return;
+    var newQty = parseInt(input.value) + amount;
+    if (newQty >= 1) input.value = newQty;
+}
+
+function updateVariantSelection() {
+    var TEXT_ADD     = 'Ø¥Ø¶Ø§ÙØ© Ø¥Ù„Ù‰ Ø§Ù„Ø³Ù„Ø©'; // Ø¥Ø¶Ø§ÙØ© Ø¥Ù„Ù‰ Ø§Ù„Ø³Ù„Ø©
+    var TEXT_OUT     = 'Ù†ÙØ¯Øª Ø§Ù„ÙƒÙ…ÙŠØ©';                   // Ù†ÙØ¯Øª Ø§Ù„ÙƒÙ…ÙŠØ©
+    var TEXT_UNAVAIL = 'ØºÙŠØ± Ù…ØªØ§Ø­';                                     // ØºÙŠØ± Ù…ØªØ§Ø­
+    var CURRENCY     = 'Ø±.Ù‚';                                                                    // Ø±.Ù‚
+
+    var radios = document.querySelectorAll('.variant-radio:checked');
+    var selectedOptions = Array.from(radios).map(function(r) { return r.value; });
+    var select = document.getElementById('ProductSelect');
+    if (!select || !window.productVariants) return;
+
+    var matchedVariant = window.productVariants.find(function(variant) {
+        return variant.options.every(function(option, index) {
+            return option === selectedOptions[index];
+        });
+    });
+
+    var addToCartBtn  = document.getElementById('AddToCart');
+    var addToCartText = document.getElementById('AddToCartText');
+    var priceElement  = document.getElementById('ProductPrice');
+
+    if (matchedVariant) {
+        select.value = matchedVariant.id;
+        if (priceElement && matchedVariant.price) {
+            priceElement.innerText = (matchedVariant.price / 100).toFixed(2) + ' ' + CURRENCY;
+        }
+        if (matchedVariant.available) {
+            addToCartBtn.disabled = false;
+            addToCartText.innerText = TEXT_ADD;
+        } else {
+            addToCartBtn.disabled = true;
+            addToCartText.innerText = TEXT_OUT;
+        }
+    } else {
+        addToCartBtn.disabled = true;
+        addToCartText.innerText = TEXT_UNAVAIL;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.querySelector('.variant-radio')) updateVariantSelection();
+});
 
 // Categories Modal
-function openCategoriesModal() { var m = document.getElementById('CategoriesModal'); if(m){ m.classList.add('active'); document.body.style.overflow = 'hidden'; } }
-function closeCategoriesModal() { var m = document.getElementById('CategoriesModal'); if(m){ m.classList.remove('active'); document.body.style.overflow = ''; } }
+function openCategoriesModal() {
+    var m = document.getElementById('CategoriesModal');
+    if (m) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
+}
+function closeCategoriesModal() {
+    var m = document.getElementById('CategoriesModal');
+    if (m) { m.classList.remove('active'); document.body.style.overflow = ''; }
+}
 
-// Move modal to body to avoid z-index stacking context issues
-document.addEventListener('DOMContentLoaded', function() { var modal = document.getElementById('CategoriesModal'); if(modal) { document.body.appendChild(modal); } });
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('CategoriesModal');
+    if (modal) document.body.appendChild(modal);
+});
