@@ -78,3 +78,6 @@ document.addEventListener('DOMContentLoaded', function() { if(document.querySele
 // Categories Modal
 function openCategoriesModal() { var m = document.getElementById('CategoriesModal'); if(m){ m.classList.add('active'); document.body.style.overflow = 'hidden'; } }
 function closeCategoriesModal() { var m = document.getElementById('CategoriesModal'); if(m){ m.classList.remove('active'); document.body.style.overflow = ''; } }
+
+// Move modal to body to avoid z-index stacking context issues
+document.addEventListener('DOMContentLoaded', function() { var modal = document.getElementById('CategoriesModal'); if(modal) { document.body.appendChild(modal); } });
