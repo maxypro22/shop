@@ -1,6 +1,8 @@
+<!-- Scroll zone: sticky hero + rising cover panel -->
+<div class="hero-zone" id="HeroZone">
 <div class="hero-section" id="HeroSection">
 
-    <!-- Full-bleed hero image -->
+    <!-- Full-bleed image -->
     <img
         id="HeroImage"
         src="{{ 'hero-image.jpg' | asset_url }}"
@@ -10,12 +12,15 @@
         fetchpriority="high"
     >
 
-    <!-- Dark gradient overlay for readability -->
+    <!-- Gradient overlay -->
     <div class="hero-overlay"></div>
 
-    <!-- Optional text overlay (controlled from theme editor) -->
+    <!-- Film grain -->
+    <div class="hero-grain"></div>
+
+    <!-- Optional text (from theme editor) -->
     {% if section.settings.show_overlay %}
-    <div class="hero-content">
+    <div class="hero-content" id="HeroContent">
         {% if section.settings.title != blank %}
             <h2 class="hero-title">{{ section.settings.title }}</h2>
         {% endif %}
@@ -36,68 +41,68 @@
         <i data-lucide="chevrons-down"></i>
     </div>
 
-    <!-- Film grain -->
-    <div class="hero-grain"></div>
+    <!-- Rising cover panel — slides up over the image on scroll -->
+    <div class="hero-cover" id="HeroCover"></div>
 
+</div>
 </div>
 
 <style>
-/* ── Hero section ──────────────────────────────────────────── */
-.hero-section {
+/* ── Scroll zone ─────────────────────────────────────────── */
+.hero-zone {
+    height: 190vh;      /* extra height creates the scroll travel */
     position: relative;
-    width: 100%;
+}
+
+/* ── Sticky hero ─────────────────────────────────────────── */
+.hero-section {
+    position: sticky;
+    top: 0;
     height: 100vh;
     min-height: 560px;
     overflow: hidden;
     background: #07090f;
+    will-change: transform;
 }
 
-/* Image fills section; JS drives a subtle parallax translateY */
+/* ── Hero image ──────────────────────────────────────────── */
 .hero-img {
     position: absolute;
     inset: 0;
     width: 100%;
-    height: 115%;   /* extra height so parallax has room */
-    top: -7.5%;
+    height: 112%;
+    top: -6%;
     object-fit: cover;
     object-position: center top;
     will-change: transform;
-    animation: hero-ken-burns 14s ease-in-out infinite alternate;
+    animation: hero-breathe 14s ease-in-out infinite alternate;
 }
-
-/* Slow zoom breathe (Ken Burns) */
-@keyframes hero-ken-burns {
-    0%   { transform: scale(1.00) translateY(0); }
-    100% { transform: scale(1.07) translateY(-1%); }
+@keyframes hero-breathe {
+    0%   { transform: scale(1.00); }
+    100% { transform: scale(1.06); }
 }
+.hero-img.js-parallax { animation-play-state: paused; }
 
-/* When JS parallax is active, animation still adds on top */
-.hero-img.parallax-active {
-    animation-play-state: paused; /* JS takes over motion */
-}
-
-/* Gradient overlay — dark bottom + vignette edges */
+/* ── Overlays ────────────────────────────────────────────── */
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(ellipse at center, transparent 45%, rgba(5,7,15,0.55) 100%),
-        linear-gradient(to top, rgba(5,7,15,0.72) 0%, transparent 55%);
     z-index: 2;
     pointer-events: none;
+    background:
+        radial-gradient(ellipse at center, transparent 40%, rgba(5,7,15,0.5) 100%),
+        linear-gradient(to top, rgba(5,7,15,0.65) 0%, transparent 50%);
 }
-
-/* Film-grain texture */
 .hero-grain {
     position: absolute;
     inset: 0;
     z-index: 3;
     pointer-events: none;
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.055"/></svg>');
     mix-blend-mode: overlay;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.055"/></svg>');
 }
 
-/* Text overlay */
+/* ── Text content ────────────────────────────────────────── */
 .hero-content {
     position: absolute;
     inset: 0;
@@ -114,7 +119,7 @@
     font-size: clamp(1.6rem, 4vw, 3.2rem);
     font-weight: 900;
     color: #fff;
-    text-shadow: 0 2px 16px rgba(0,0,0,0.45);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.5);
     text-align: right;
     pointer-events: auto;
 }
@@ -139,13 +144,9 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     pointer-events: auto;
 }
-.hero-cta:hover {
-    background: var(--primary);
-    color: #fff;
-    transform: translateY(-2px);
-}
+.hero-cta:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
 
-/* Scroll hint */
+/* ── Scroll hint ─────────────────────────────────────────── */
 .hero-scroll-hint {
     position: absolute;
     bottom: 2.5rem;
@@ -158,59 +159,82 @@
 }
 .hero-scroll-hint i,
 .hero-scroll-hint svg { width: 34px; height: 34px; }
-
 @keyframes hint-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0);     opacity: 0.6; }
-    50%       { transform: translateX(-50%) translateY(10px);  opacity: 1;   }
+    0%, 100% { transform: translateX(-50%) translateY(0);    opacity: 0.6; }
+    50%       { transform: translateX(-50%) translateY(10px); opacity: 1;   }
 }
 
+/* ── Rising cover panel ──────────────────────────────────── */
+.hero-cover {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;       /* slight overlap prevents sub-pixel gap */
+    height: 100%;
+    background: var(--bg-main);
+    border-radius: 28px 28px 0 0;
+    transform: translateY(100%); /* starts fully below viewport */
+    will-change: transform;
+    z-index: 9;
+    /* shadow on top edge creates depth as it rises */
+    box-shadow: 0 -16px 60px rgba(0,0,0,0.22);
+}
+
+/* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
+    .hero-zone { height: 170vh; }
     .hero-content {
-        padding: 1.5rem;
+        padding: 1.5rem 1.5rem 5rem;
         align-items: center;
         justify-content: flex-end;
-        padding-bottom: 5rem;
-        text-align: center;
     }
     .hero-subtitle { max-width: 100%; }
+    .hero-cover { border-radius: 20px 20px 0 0; }
 }
 </style>
 
 <script>
-/* ── Parallax ─────────────────────────────────────────────── */
 (function () {
-    var img     = document.getElementById('HeroImage');
-    var section = document.getElementById('HeroSection');
-    var hint    = document.getElementById('HeroScrollHint');
-    if (!img || !section) return;
+    var img   = document.getElementById('HeroImage');
+    var cover = document.getElementById('HeroCover');
+    var hint  = document.getElementById('HeroScrollHint');
+    var zone  = document.getElementById('HeroZone');
+    if (!img || !cover || !zone) return;
 
     var ticking = false;
 
-    function onScroll() {
-        if (!ticking) {
-            requestAnimationFrame(update);
-            ticking = true;
-        }
+    /* smooth-step easing: slow start, slow end */
+    function smoothStep(t) {
+        return t * t * (3 - 2 * t);
     }
 
     function update() {
         ticking = false;
-        var scrolled = window.scrollY;
-        var sectionH = section.offsetHeight;
+        var scrolled  = window.scrollY;
+        var viewH     = window.innerHeight;
 
-        /* Parallax: image moves at 40% of scroll speed */
-        var shift = scrolled * 0.40;
-        img.style.transform = 'scale(1.07) translateY(calc(' + shift + 'px - 1%))';
-        img.classList.add('parallax-active');
+        /* Progress 0 → 1 over the first 80vh of scroll */
+        var raw      = Math.max(0, Math.min(1, scrolled / (viewH * 0.80)));
+        var progress = smoothStep(raw);
 
-        /* Fade out scroll hint */
-        if (hint) {
-            hint.style.opacity = scrolled > 80 ? '0' : '1';
-        }
+        /* Cover rises from translateY(100%) → translateY(0%) */
+        cover.style.transform = 'translateY(' + ((1 - progress) * 100) + '%)';
+
+        /* Image gentle parallax: shifts up slightly as cover rises */
+        var imgShift = -progress * 7;  /* -7% max upward shift */
+        img.style.transform = 'scale(1.06) translateY(' + imgShift + '%)';
+        img.classList.add('js-parallax');
+
+        /* Fade hint early */
+        if (hint) hint.style.opacity = raw > 0.08 ? '0' : '1';
+    }
+
+    function onScroll() {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    update(); /* run once on load */
+    update();
 })();
 </script>
 
@@ -247,10 +271,6 @@
       "label": "رابط الزر"
     }
   ],
-  "presets": [
-    {
-      "name": "هيرو"
-    }
-  ]
+  "presets": [{ "name": "هيرو" }]
 }
 {% endschema %}
