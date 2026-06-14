@@ -39,29 +39,30 @@
                                 </div>
 
                             {%- when 'price_range' -%}
+                                {%- assign price_max = filter.range_max | divided_by: 100.0 | floor -%}
                                 <div class="price-range-inputs">
                                     <div class="price-input-wrapper">
                                         <span>{{ cart.currency.symbol }}</span>
-                                        <input type="number" 
-                                            name="{{ filter.min_value.param_name }}" 
-                                            id="Filter-{{ filter.min_value.param_name }}" 
+                                        <input type="number"
+                                            name="{{ filter.min_value.param_name }}"
+                                            id="Filter-{{ filter.min_value.param_name }}"
                                             {% if filter.min_value.value -%}
-                                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                                                value="{{ filter.min_value.value | divided_by: 100.0 | floor }}"
                                             {%- endif %}
-                                            placeholder="0" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                            placeholder="0" min="0" max="{{ price_max }}"
                                             onchange="document.getElementById('CollectionFiltersForm').submit();"
                                         >
                                     </div>
                                     <span style="align-self: center;">إلى</span>
                                     <div class="price-input-wrapper">
                                         <span>{{ cart.currency.symbol }}</span>
-                                        <input type="number" 
-                                            name="{{ filter.max_value.param_name }}" 
-                                            id="Filter-{{ filter.max_value.param_name }}" 
+                                        <input type="number"
+                                            name="{{ filter.max_value.param_name }}"
+                                            id="Filter-{{ filter.max_value.param_name }}"
                                             {% if filter.max_value.value -%}
-                                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                                                value="{{ filter.max_value.value | divided_by: 100.0 | floor }}"
                                             {%- endif %}
-                                            placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                            placeholder="{{ price_max }}" min="0" max="{{ price_max }}"
                                             onchange="document.getElementById('CollectionFiltersForm').submit();"
                                         >
                                     </div>
