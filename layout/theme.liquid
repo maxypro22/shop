@@ -41,6 +41,9 @@
         {{ content_for_layout }}
     </main>
 
+    <!-- Footer -->
+    {% section 'footer' %}
+
     <!-- Theme JS -->
     {{ 'script.js' | asset_url | script_tag }}
 </body>
