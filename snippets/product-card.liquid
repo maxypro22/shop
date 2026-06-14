@@ -22,8 +22,27 @@
         {% if product.tags contains 'top' %}
             <span class="badge top-item">الأكثر مبيعاً</span>
         {% endif %}
+        {% if product.compare_at_price > product.price %}
+            {% assign discount_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+            <span class="badge sale-badge">-{{ discount_pct }}%</span>
+        {% endif %}
     </div>
     <div class="card-content">
+        {%- assign total_stock = 0 -%}
+        {%- for v in product.variants -%}
+            {%- if v.inventory_quantity > 0 -%}
+                {%- assign total_stock = total_stock | plus: v.inventory_quantity -%}
+            {%- endif -%}
+        {%- endfor -%}
+        {%- if product.variants.first.inventory_management == 'shopify' -%}
+            {%- if total_stock <= 0 -%}
+                <div class="stock-pill stock-out"><span class="stock-dot"></span>نفدت الكمية</div>
+            {%- elsif total_stock <= 5 -%}
+                <div class="stock-pill stock-urgent"><span class="stock-dot"></span>آخر {{ total_stock }} قطع فقط</div>
+            {%- elsif total_stock <= 15 -%}
+                <div class="stock-pill stock-low"><span class="stock-dot"></span>{{ total_stock }} متبقية</div>
+            {%- endif -%}
+        {%- endif -%}
         <a href="{{ product.url | within: collection }}" style="text-decoration: none; color: inherit; flex: 1;">
             <h3 class="product-title">{{ product.title }}</h3>
         </a>

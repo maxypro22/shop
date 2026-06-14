@@ -803,7 +803,7 @@ button {
 .variant-radio:checked + .variant-pill { background-color: var(--primary); color: white; border-color: var(--primary); }
 .quantity-selector { margin-bottom: 2rem; }
 .qty-input-wrapper { display: inline-flex; align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-full); background-color: var(--bg-card); overflow: hidden; }
-.qty-btn { padding: 0.5rem 1rem; color: var(--text-dark); display: flex; align-items: center; justify-content: center; }
+.qty-btn { padding: 0.5rem 1.1rem; color: #0f172a; background: transparent; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; cursor: pointer; line-height: 1; user-select: none; }
 .qty-btn:hover { color: var(--primary); background-color: var(--bg-main); }
 .qty-input { width: 50px; text-align: center; border: none; background: transparent; font-weight: 700; font-family: inherit; outline: none; }
 .qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -812,6 +812,94 @@ button {
 .add-cart-btn-large:hover { background-color: black; transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .add-cart-btn-large:disabled { background-color: var(--text-light); cursor: not-allowed; transform: none; box-shadow: none; }
 .shopify-payment-button__button { border-radius: var(--radius-full) !important; padding: 1rem !important; font-family: inherit !important; }
+
+/* Buy Now button */
+.buy-now-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border: 2px solid #cbd5e1;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.buy-now-btn:hover {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
+    border-color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15,23,42,0.2);
+}
+.buy-now-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Stock / Inventory badge on product cards */
+.stock-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.01em;
+}
+.stock-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: stock-pulse 2s ease-in-out infinite;
+}
+.stock-urgent {
+    background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.12));
+    color: #dc2626;
+    border: 1px solid rgba(239,68,68,0.2);
+}
+.stock-urgent .stock-dot { background: #ef4444; }
+.stock-low {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.12));
+    color: #d97706;
+    border: 1px solid rgba(245,158,11,0.2);
+}
+.stock-low .stock-dot { background: #f59e0b; }
+.stock-out {
+    background: linear-gradient(135deg, rgba(148,163,184,0.08), rgba(148,163,184,0.12));
+    color: var(--text-light);
+    border: 1px solid rgba(148,163,184,0.2);
+}
+.stock-out .stock-dot { background: var(--text-light); animation: none; }
+@keyframes stock-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Discount badge on card image */
+.badge.sale-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    font-size: 0.72rem;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.35);
+}
 .product-description-full { background-color: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
 .product-description-full h3 { margin-bottom: 1rem; font-size: 1.2rem; }
 .rte { color: var(--text-muted); line-height: 1.8; }
