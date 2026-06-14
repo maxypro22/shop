@@ -180,6 +180,73 @@ button {
 }
 
 /* Category Pills */
+/* Pills scroll track */
+.pills-wrapper {
+    position: relative;
+}
+/* Gradient fade — hints at hidden content */
+.pills-wrapper::before,
+.pills-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 70px;
+    z-index: 15;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.pills-wrapper::before {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-main) 30%, transparent);
+}
+.pills-wrapper::after {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-main) 30%, transparent);
+}
+
+/* Arrow buttons */
+.pills-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-color);
+    background: #ffffff;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.13);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%) scale(0.8);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s ease,
+                background 0.2s ease,
+                color 0.2s ease;
+}
+.pills-arrow.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+}
+.pills-arrow:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+.pills-arrow-right { right: 0.6rem; }
+.pills-arrow-left  { left: 0.6rem; }
+.pills-arrow i,
+.pills-arrow svg { width: 17px; height: 17px; }
+
 .category-pills {
     display: flex;
     gap: 0.75rem;
@@ -188,7 +255,9 @@ button {
     scrollbar-width: none;
     align-items: center;
     white-space: nowrap;
+    cursor: grab;
 }
+.category-pills:active { cursor: grabbing; }
 .category-pills::-webkit-scrollbar {
     display: none;
 }

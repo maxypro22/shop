@@ -1,27 +1,34 @@
 <div class="main-container" style="padding-bottom: 0;">
-    <section class="category-pills" style="padding-bottom: 1rem; position: relative;">
-        <!-- More Button (Fixed at start) -->
-        <button class="pill more-btn" onclick="openCategoriesModal()" style="border:none; cursor:pointer; position: sticky; right: 0; z-index: 10; box-shadow: -4px 0 10px rgba(0,0,0,0.05); background-color: var(--text-dark); color: white;">
-            المزيد
-            <i data-lucide="grid" style="width:14px; height:14px; display:inline-block; margin-right:5px; vertical-align: middle;"></i>
+    <div class="pills-wrapper">
+
+        <!-- Right arrow (scroll back / go right) -->
+        <button class="pills-arrow pills-arrow-right" id="PillsRight" aria-label="السابق">
+            <i data-lucide="chevron-right"></i>
         </button>
 
-        <a href="/collections/all" class="pill {% if request.path == '/collections/all' or request.path == '/' %}active{% endif %}" style="text-decoration: none;">الكل</a>
-        <a href="/collections/العطور" class="pill {% if request.path contains 'العطور' %}active{% endif %}" style="text-decoration: none;">العطور</a>
-        <a href="/collections/shoes" class="pill {% if request.path contains 'shoes' %}active{% endif %}" style="text-decoration: none;">shoes</a>
-        <a href="/collections/سليبر-بحر" class="pill {% if request.path contains 'سليبر-بحر' %}active{% endif %}" style="text-decoration: none;">سليبر بحر</a>
-        <a href="/collections/oversized" class="pill {% if request.path contains 'oversized' %}active{% endif %}" style="text-decoration: none;">oversized</a>
-        <a href="/collections/t-shirt" class="pill {% if request.path contains 't-shirt' %}active{% endif %}" style="text-decoration: none;">t-shirt</a>
-        <a href="/collections/قمصان-رجالية" class="pill {% if request.path contains 'قمصان-رجالية' %}active{% endif %}" style="text-decoration: none;">قمصان رجالية</a>
-        
-        <!-- Append any other collections dynamically -->
-        {% for collection in collections %}
-            {% assign handle = collection.handle %}
-            {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
-                <a href="{{ collection.url }}" class="pill {% if request.path == collection.url %}active{% endif %}" style="text-decoration: none;">{{ collection.title }}</a>
-            {% endif %}
-        {% endfor %}
-    </section>
+        <section class="category-pills" id="CatPillsTrack" style="padding-bottom: 1rem;">
+            <a href="/collections/all" class="pill {% if request.path == '/collections/all' or request.path == '/' %}active{% endif %}" style="text-decoration: none;">الكل</a>
+            <a href="/collections/العطور" class="pill {% if request.path contains 'العطور' %}active{% endif %}" style="text-decoration: none;">العطور</a>
+            <a href="/collections/shoes" class="pill {% if request.path contains 'shoes' %}active{% endif %}" style="text-decoration: none;">shoes</a>
+            <a href="/collections/سليبر-بحر" class="pill {% if request.path contains 'سليبر-بحر' %}active{% endif %}" style="text-decoration: none;">سليبر بحر</a>
+            <a href="/collections/oversized" class="pill {% if request.path contains 'oversized' %}active{% endif %}" style="text-decoration: none;">oversized</a>
+            <a href="/collections/t-shirt" class="pill {% if request.path contains 't-shirt' %}active{% endif %}" style="text-decoration: none;">t-shirt</a>
+            <a href="/collections/قمصان-رجالية" class="pill {% if request.path contains 'قمصان-رجالية' %}active{% endif %}" style="text-decoration: none;">قمصان رجالية</a>
+
+            {% for collection in collections %}
+                {% assign handle = collection.handle %}
+                {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
+                    <a href="{{ collection.url }}" class="pill {% if request.path == collection.url %}active{% endif %}" style="text-decoration: none;">{{ collection.title }}</a>
+                {% endif %}
+            {% endfor %}
+        </section>
+
+        <!-- Left arrow (scroll to see more) -->
+        <button class="pills-arrow pills-arrow-left" id="PillsLeft" aria-label="التالي">
+            <i data-lucide="chevron-left"></i>
+        </button>
+
+    </div>
 </div>
 
 <!-- Full Categories Modal -->
@@ -33,7 +40,6 @@
                 <i data-lucide="x" style="width:24px; height:24px;"></i>
             </button>
         </div>
-        
         <div class="modal-grid" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
             <a href="/collections/all" class="pill {% if request.path == '/collections/all' or request.path == '/' %}active{% endif %}" style="text-decoration: none;">الكل</a>
             <a href="/collections/العطور" class="pill {% if request.path contains 'العطور' %}active{% endif %}" style="text-decoration: none;">العطور</a>
@@ -42,7 +48,6 @@
             <a href="/collections/oversized" class="pill {% if request.path contains 'oversized' %}active{% endif %}" style="text-decoration: none;">oversized</a>
             <a href="/collections/t-shirt" class="pill {% if request.path contains 't-shirt' %}active{% endif %}" style="text-decoration: none;">t-shirt</a>
             <a href="/collections/قمصان-رجالية" class="pill {% if request.path contains 'قمصان-رجالية' %}active{% endif %}" style="text-decoration: none;">قمصان رجالية</a>
-            
             {% for collection in collections %}
                 {% assign handle = collection.handle %}
                 {% if handle != 'frontpage' and handle != 'all' and handle != 'العطور' and handle != 'shoes' and handle != 'سليبر-بحر' and handle != 'oversized' and handle != 't-shirt' and handle != 'قمصان-رجالية' %}
@@ -52,6 +57,52 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    var track    = document.getElementById('CatPillsTrack');
+    var btnLeft  = document.getElementById('PillsLeft');
+    var btnRight = document.getElementById('PillsRight');
+    if (!track || !btnLeft || !btnRight) return;
+
+    var STEP = 280;
+
+    function updateArrows() {
+        // In RTL, scrollLeft is 0 at right-end and goes negative toward left
+        var pos = Math.abs(track.scrollLeft);
+        var max = track.scrollWidth - track.clientWidth;
+        btnLeft.classList.toggle('visible',  pos < max - 6);
+        btnRight.classList.toggle('visible', pos > 6);
+    }
+
+    btnLeft.addEventListener('click', function () {
+        track.scrollBy({ left: -STEP, behavior: 'smooth' });
+    });
+    btnRight.addEventListener('click', function () {
+        track.scrollBy({ left: STEP, behavior: 'smooth' });
+    });
+
+    // Touch/mouse drag support
+    var isDragging = false, startX = 0, startScroll = 0;
+    track.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        startX = e.pageX;
+        startScroll = track.scrollLeft;
+        track.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mouseup', function () {
+        isDragging = false;
+        track.style.cursor = '';
+    });
+    track.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        track.scrollLeft = startScroll - (e.pageX - startX);
+    });
+
+    track.addEventListener('scroll', updateArrows, { passive: true });
+    setTimeout(updateArrows, 150);
+})();
+</script>
 
 {% schema %}
 {
