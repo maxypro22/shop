@@ -1,0 +1,235 @@
+<div class="app-download-section">
+    <div class="main-container">
+        <div class="app-download-wrapper">
+            <div class="app-content">
+                <h2>حمل تطبيقنا الآن</h2>
+                <p>تسوق أسهل وأسرع مع تطبيق Shop Five. استمتع بتجربة تسوق لا مثيل لها، عروض حصرية، وتتبع مباشر لطلباتك بكل سهولة.</p>
+                <div class="app-buttons">
+                    <a href="#" class="app-btn apple-btn">
+                        <i data-lucide="apple" style="width: 28px; height: 28px; fill: currentColor;"></i>
+                        <div class="btn-text">
+                            <span class="small">Download on the</span>
+                            <span class="large">App Store</span>
+                        </div>
+                    </a>
+                    <a href="#" class="app-btn google-btn">
+                        <i data-lucide="play-square" style="width: 28px; height: 28px;"></i>
+                        <div class="btn-text">
+                            <span class="small">GET IT ON</span>
+                            <span class="large">Google Play</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="app-image">
+                <div class="phone-mockup">
+                    <div class="screen">
+                        <i data-lucide="shopping-bag" style="width: 60px; height: 60px; margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 2rem; font-weight: 900;">Shop Five</h3>
+                        <p style="opacity: 0.6; font-size: 0.9rem;">App Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.app-download-section {
+    padding: 2rem 0 5rem;
+    background-color: var(--bg-main);
+}
+
+.app-download-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+    background: linear-gradient(135deg, #111 0%, #222 100%);
+    border-radius: 2rem;
+    padding: 4rem;
+    color: white;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative background circle */
+.app-download-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.app-content {
+    flex: 1;
+    z-index: 2;
+}
+
+.app-content h2 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.app-content p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    max-width: 500px;
+}
+
+.app-buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.app-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: white;
+    color: #111;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    direction: ltr; /* Ensure english text stays LTR */
+}
+
+.btn-text .small {
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.btn-text .large {
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.app-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+    perspective: 1000px;
+}
+
+.phone-mockup {
+    width: 260px;
+    height: 520px;
+    background-color: #000;
+    border-radius: 3rem;
+    border: 10px solid #333;
+    box-shadow: -20px 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform: rotateY(-15deg) rotateX(5deg);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-download-wrapper:hover .phone-mockup {
+    transform: rotateY(0deg) rotateX(0deg) translateY(-10px);
+}
+
+.phone-mockup::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 25px;
+    background-color: #333;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    z-index: 10;
+}
+
+.phone-mockup .screen {
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-radius: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Screen reflection */
+.phone-mockup .screen::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+@media (max-width: 992px) {
+    .app-download-wrapper {
+        flex-direction: column;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+    
+    .app-content p {
+        margin: 0 auto 2.5rem;
+    }
+    
+    .app-buttons {
+        justify-content: center;
+    }
+    
+    .app-image {
+        display: none;
+    }
+}
+</style>
+
+<script>
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+</script>
+
+{% schema %}
+{
+  "name": "تحميل التطبيق",
+  "presets": [
+    {
+      "name": "تحميل التطبيق"
+    }
+  ]
+}
+{% endschema %}
