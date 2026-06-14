@@ -1,55 +1,22 @@
-<div class="main-container" style="padding-top: 2rem;">
-    <div class="content-wrapper">
-        
-        <!-- Sidebar Filters -->
-        <aside class="sidebar-filters">
-            <div class="filter-section">
-                <div class="filter-header">
-                    <h3>نطاق السعر</h3>
-                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
-                </div>
-                <p class="filter-desc">فلتر السعر غير مفعل في هذه النسخة</p>
-                <div class="slider-container">
-                    <div class="slider-track">
-                        <div class="slider-fill"></div>
-                        <div class="slider-thumb min"></div>
-                        <div class="slider-thumb max"></div>
-                    </div>
-                    <div class="price-labels">
-                        <span>20 ر.ق</span>
-                        <span>1000 ر.ق</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-header">
-                    <h3>الماركة</h3>
-                    <button class="reset-btn" onclick="resetFilters()">إعادة ضبط</button>
-                </div>
-                <div class="brand-list">
-                    {% for product_vendor in shop.vendors limit: 5 %}
-                        <label class="brand-item">
-                            <input type="checkbox">
-                            <span class="custom-checkbox">
-                                <i data-lucide="check"></i>
-                            </span>
-                            <span class="brand-name">{{ product_vendor }}</span>
-                        </label>
-                    {% else %}
-                        <label class="brand-item"><input type="checkbox" checked><span class="custom-checkbox"><i data-lucide="check"></i></span><span class="brand-name">أديداس</span></label>
-                        <label class="brand-item"><input type="checkbox"><span class="custom-checkbox"><i data-lucide="check"></i></span><span class="brand-name">شوب فايف</span></label>
-                        <label class="brand-item"><input type="checkbox"><span class="custom-checkbox"><i data-lucide="check"></i></span><span class="brand-name">نايك</span></label>
-                    {% endfor %}
-                </div>
-            </div>
-        </aside>
-
-        <!-- Product Grid Section -->
-        {% section 'home-grid' %}
-
+<!-- Best Sellers Section -->
+<div class="main-container" style="padding-top: 3rem; padding-bottom: 1rem;">
+    <div class="bs-header">
+        <div>
+            <h2 class="bs-title">الأكثر مبيعاً</h2>
+            <p class="bs-subtitle">أبرز المنتجات التي يختارها عملاؤنا</p>
+        </div>
+        <a href="/collections/all" class="btn-view-all">
+            عرض الكل <i data-lucide="arrow-left"></i>
+        </a>
     </div>
+
+    {% section 'home-grid' %}
+
 </div>
 
 {% section 'store-features' %}
 {% section 'app-download' %}
+
+<script>
+    if (window.lucide) lucide.createIcons();
+</script>
