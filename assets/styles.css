@@ -24,7 +24,21 @@
     --radius-full: 99px;
     
     --font-family: 'Cairo', sans-serif;
-    --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Ultra-smooth Apple-like spring */
+    /* Specific props only — never use `transition: all` */
+    --transition: color 0.28s cubic-bezier(0.16,1,0.3,1),
+                  background-color 0.28s cubic-bezier(0.16,1,0.3,1),
+                  background 0.28s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.28s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.28s cubic-bezier(0.16,1,0.3,1),
+                  opacity 0.28s cubic-bezier(0.16,1,0.3,1),
+                  border-color 0.28s cubic-bezier(0.16,1,0.3,1);
+    --spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth scrolling + compositing hints */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 * {
@@ -39,6 +53,12 @@ body {
     color: var(--text-dark);
     line-height: 1.5;
     min-height: 100vh;
+    /* Crisp text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+    /* Prevent pull-to-refresh jank on mobile */
+    overscroll-behavior-y: contain;
 }
 
 /* Typography */
@@ -1107,6 +1127,51 @@ a.pagination-item:hover {
 @media (max-width: 768px) {
     .bs-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .bs-title { font-size: 1.5rem; }
+}
+
+/* ── Performance: GPU layers & layout containment ──────────────── */
+
+/* Hero image — permanent GPU layer (transforms on every scroll frame) */
+.hero-img {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Cards — promote to GPU layer only while hovering to conserve memory */
+.product-card {
+    contain: layout style;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.product-card:hover { will-change: transform; }
+
+.bs-card {
+    contain: layout style;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.bs-card:hover { will-change: transform; }
+
+.feature-card {
+    contain: layout style;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.feature-card:hover { will-change: transform; }
+
+/* Skip below-fold paint until element is near the viewport */
+.store-features-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 420px;
+}
+.app-download-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 480px;
+}
+.site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 520px;
 }
 
 /* ─── Scroll Reveal ─────────────────────────────────────────────── */

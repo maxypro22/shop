@@ -1,5 +1,5 @@
-// Initialize Lucide icons
-lucide.createIcons();
+// Initialize Lucide icons (defer-loaded — runs after DOM is ready)
+if (typeof lucide !== 'undefined') lucide.createIcons();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Category Pills interactivity

@@ -4,9 +4,19 @@
             <i data-lucide="heart"></i>
         </button>
         <a href="{{ product.url | within: collection }}" class="product-image-link {% if product.images.size > 1 %}has-hover-image{% endif %}">
-            <img src="{{ product.featured_image.src | img_url: '600x600', crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}" class="primary-image" loading="lazy">
+            <img src="{{ product.featured_image.src | img_url: '600x600', crop: 'center' }}"
+                 alt="{{ product.featured_image.alt | escape }}"
+                 class="primary-image"
+                 loading="lazy"
+                 decoding="async"
+                 width="600" height="600">
             {% if product.images.size > 1 %}
-                <img src="{{ product.images[1].src | img_url: '600x600', crop: 'center' }}" alt="{{ product.images[1].alt | escape }}" class="secondary-image" loading="lazy">
+                <img src="{{ product.images[1].src | img_url: '600x600', crop: 'center' }}"
+                     alt="{{ product.images[1].alt | escape }}"
+                     class="secondary-image"
+                     loading="lazy"
+                     decoding="async"
+                     width="600" height="600">
             {% endif %}
         </a>
         {% if product.tags contains 'top' %}

@@ -9,13 +9,22 @@
         <meta name="description" content="{{ page_description | escape }}">
     {% endif %}
 
-    <!-- Google Fonts: Cairo for Arabic -->
+    <!-- Meta -->
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- DNS prefetch for external origins -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Critical font — preload woff2 subset hint -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+
+    {% if template == 'index' %}
+    <!-- Preload LCP hero image -->
+    <link rel="preload" as="image" href="{{ 'hero-image.jpg' | asset_url }}" fetchpriority="high">
+    {% endif %}
 
     <!-- Theme CSS -->
     {{ 'styles.css' | asset_url | stylesheet_tag }}
@@ -43,6 +52,9 @@
 
     <!-- Footer -->
     {% section 'footer' %}
+
+    <!-- Lucide icons — loaded after HTML so it never blocks render -->
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
 
     <!-- Theme JS -->
     {{ 'script.js' | asset_url | script_tag }}
