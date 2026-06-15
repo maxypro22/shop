@@ -1,7 +1,7 @@
 <header class="top-nav">
     <div class="logo">
         <a href="{{ routes.root_url }}" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
-            <img src="{{ 'custom-logo.png' | asset_url }}" alt="{{ shop.name }}" style="height: 56px; width: auto; mix-blend-mode: screen;">
+            <img src="{{ 'custom-logo.png' | asset_url }}" alt="{{ shop.name }}" style="height: 56px; width: auto; mix-blend-mode: screen; border-radius: 8px;">
         </a>
     </div>
     
@@ -13,6 +13,9 @@
     </div>
 
     <div class="nav-actions">
+        <a href="{{ routes.search_url }}" class="action-btn header-search-mobile" aria-label="بحث">
+            <i data-lucide="search"></i>
+        </a>
         {% if customer %}
             <a href="{{ routes.account_url }}" class="action-btn">
                 <i data-lucide="user"></i>
