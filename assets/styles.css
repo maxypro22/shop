@@ -1277,8 +1277,42 @@ a.pagination-item:hover {
 
 /* ── Featured Collection — Premium Luxury ────────────────── */
 .fc-wrap {
+    position: relative;
     background: linear-gradient(180deg, #06060e 0%, #0c0c1a 100%);
     padding: 4.5rem 0;
+}
+
+/* Color-tone variants */
+.fc-wrap--navy {
+    background: linear-gradient(180deg, #030912 0%, #05101e 100%);
+}
+.fc-wrap--plum {
+    background: linear-gradient(180deg, #080610 0%, #10091e 100%);
+}
+.fc-wrap--teal {
+    background: linear-gradient(180deg, #030e0c 0%, #051812 100%);
+}
+
+/* Colored accent line at top of each fc section for color contrast */
+.fc-wrap--navy::before,
+.fc-wrap--plum::before,
+.fc-wrap--teal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    pointer-events: none;
+}
+.fc-wrap--navy::before {
+    background: linear-gradient(90deg, transparent, rgba(40, 100, 220, 0.28), transparent);
+}
+.fc-wrap--plum::before {
+    background: linear-gradient(90deg, transparent, rgba(140, 60, 210, 0.28), transparent);
+}
+.fc-wrap--teal::before {
+    background: linear-gradient(90deg, transparent, rgba(20, 160, 130, 0.28), transparent);
 }
 
 .fc-header {
@@ -1524,7 +1558,7 @@ a.pagination-item:hover {
     to   { transform: scale(1.07); }
 }
 
-/* Layer 1 — dark vignette overlay */
+/* Layer 1 — dark vignette overlay (base) */
 .pb-vignette {
     position: absolute;
     inset: 0;
@@ -1533,6 +1567,43 @@ a.pagination-item:hover {
         radial-gradient(ellipse at center, rgba(4,4,14,0.42) 0%, rgba(4,4,14,0.72) 100%),
         linear-gradient(to top,  rgba(4,4,14,0.7) 0%, transparent 45%),
         linear-gradient(to bottom, rgba(4,4,14,0.55) 0%, transparent 35%);
+}
+
+/* Warm overlay — light/beige images need heavier dark cover */
+.pb-vignette--warm {
+    background:
+        radial-gradient(ellipse at center, rgba(6,4,2,0.55) 0%, rgba(6,4,2,0.82) 100%),
+        linear-gradient(to top,  rgba(6,4,2,0.82) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(6,4,2,0.65) 0%, transparent 35%);
+}
+
+/* Cool overlay — dark images, lighter dark cover with blue tint */
+.pb-vignette--cool {
+    background:
+        radial-gradient(ellipse at center, rgba(2,4,10,0.38) 0%, rgba(2,4,10,0.65) 100%),
+        linear-gradient(to top,  rgba(2,4,10,0.62) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(2,4,10,0.48) 0%, transparent 35%);
+}
+
+/* Neutral overlay */
+.pb-vignette--neutral {
+    background:
+        radial-gradient(ellipse at center, rgba(4,4,12,0.45) 0%, rgba(4,4,12,0.74) 100%),
+        linear-gradient(to top,  rgba(4,4,12,0.72) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(4,4,12,0.58) 0%, transparent 35%);
+}
+
+/* Smooth fade-out at the bottom of each pb section into the next fc section */
+.pb-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(6,6,14,0.6) 100%);
+    z-index: 4;
+    pointer-events: none;
 }
 
 /* Layer 2 — subtle film grain via SVG noise */

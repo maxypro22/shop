@@ -1,0 +1,53 @@
+<section class="fc-wrap fc-wrap--plum">
+  <div class="main-container">
+    <div class="fc-header">
+      <div class="fc-header-text">
+        <span class="fc-eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="fc-title">{{ section.settings.title }}</h2>
+        <p class="fc-subtitle">{{ section.settings.subtitle }}</p>
+      </div>
+      {%- assign fc_collection = collections[section.settings.collection] -%}
+      {%- if fc_collection != blank -%}
+        <a href="{{ fc_collection.url }}" class="btn-view-all btn-view-all--light">
+          عرض الكل <i data-lucide="arrow-left"></i>
+        </a>
+      {%- endif -%}
+    </div>
+    {%- if fc_collection != blank -%}
+      <div class="fc-grid">
+        {%- for card_product in fc_collection.products limit: 4 -%}
+          <article class="fc-card" data-index="{{ forloop.index }}">
+            <span class="fc-badge">{{ section.settings.badge_text }}</span>
+            {%- if card_product.featured_image -%}
+              <img src="{{ card_product.featured_image | image_url: width: 500 }}" alt="{{ card_product.title | escape }}" class="fc-img" loading="lazy" width="500">
+            {%- else -%}
+              <div class="fc-img fc-img--placeholder"></div>
+            {%- endif -%}
+            <div class="fc-card-overlay">
+              {%- if card_product.type != blank -%}<span class="fc-cat">{{ card_product.type }}</span>{%- endif -%}
+              <h3 class="fc-name">{{ card_product.title }}</h3>
+              <p class="fc-price">
+                {%- if card_product.compare_at_price > card_product.price -%}<span class="fc-price-was">{{ card_product.compare_at_price | money }}</span>{%- endif -%}
+                {{ card_product.price | money }}
+              </p>
+              <a href="{{ card_product.url }}" class="fc-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "كولكشن مميز ٦",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "النص فوق العنوان", "default": "CURATED FOR YOU" },
+    { "type": "text", "id": "title", "label": "العنوان الرئيسي", "default": "كولكشن مميز" },
+    { "type": "text", "id": "subtitle", "label": "العنوان الفرعي", "default": "منتجات مختارة بعناية لك" },
+    { "type": "collection", "id": "collection", "label": "اختر الكولكشن" },
+    { "type": "text", "id": "badge_text", "label": "نص الشارة", "default": "مميز" }
+  ],
+  "presets": [{ "name": "كولكشن مميز ٦" }]
+}
+{% endschema %}
