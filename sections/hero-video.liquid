@@ -1,226 +1,698 @@
-<div class="hero-section" id="HeroSection">
+<section class="hs-hero" id="HeroSlider">
 
-    <img
-        id="HeroImage"
-        src="{{ 'hero-image.jpg' | asset_url }}"
-        alt="Shop Five"
-        class="hero-img"
-        loading="eager"
-        fetchpriority="high"
-    >
-
-    <div class="hero-overlay"></div>
-    <div class="hero-grain"></div>
-
-    {% if section.settings.show_overlay %}
-    <div class="hero-content">
-        {% if section.settings.title != blank %}
-            <h2 class="hero-title">{{ section.settings.title }}</h2>
-        {% endif %}
-        {% if section.settings.subtitle != blank %}
-            <p class="hero-subtitle">{{ section.settings.subtitle }}</p>
-        {% endif %}
-        {% if section.settings.btn_text != blank and section.settings.btn_link != blank %}
-            <a href="{{ section.settings.btn_link }}" class="hero-cta">
-                {{ section.settings.btn_text }}
-                <i data-lucide="arrow-left" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></i>
-            </a>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    <div class="hero-scroll-hint" id="HeroScrollHint">
-        <i data-lucide="chevrons-down"></i>
+    <!-- ── Slide backgrounds (crossfade layers) ──────────────── -->
+    <div class="hs-tracks">
+        {% for block in section.blocks %}
+        {%- assign idx = forloop.index0 -%}
+        <div class="hs-slide{% if forloop.first %} active{% endif %}" data-index="{{ idx }}" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | img_url: '1920x' }}"
+                     class="hs-bg-img"
+                     loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                     {% if forloop.first %}fetchpriority="high"{% endif %}
+                     alt="{{ block.settings.title | default: '' | escape }}">
+            {% else %}
+                {%- assign fb_images = 'bs-bag.jpg,bs-perfume.jpg,bs-cap.jpg,bs-shoes.jpg' | split: ',' -%}
+                {%- assign fb_img = fb_images[idx] | default: 'hero-image.jpg' -%}
+                <img src="{{ fb_img | asset_url }}"
+                     class="hs-bg-img"
+                     loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                     {% if forloop.first %}fetchpriority="high"{% endif %}
+                     alt="{{ block.settings.title | default: '' | escape }}">
+            {% endif %}
+        </div>
+        {% else %}
+        <!-- Default 4 slides when no blocks configured -->
+        <div class="hs-slide active" data-index="0"><img src="{{ 'bs-bag.jpg'     | asset_url }}" class="hs-bg-img" loading="eager" fetchpriority="high" alt="حقائب"></div>
+        <div class="hs-slide"        data-index="1"><img src="{{ 'bs-perfume.jpg' | asset_url }}" class="hs-bg-img" loading="lazy"  alt="عطور"></div>
+        <div class="hs-slide"        data-index="2"><img src="{{ 'bs-cap.jpg'     | asset_url }}" class="hs-bg-img" loading="lazy"  alt="إكسسوارات"></div>
+        <div class="hs-slide"        data-index="3"><img src="{{ 'bs-shoes.jpg'   | asset_url }}" class="hs-bg-img" loading="lazy"  alt="أحذية"></div>
+        {% endfor %}
     </div>
 
-</div>
+    <!-- ── Dark + side gradient overlays ────────────────────── -->
+    <div class="hs-overlay"></div>
+    <div class="hs-grain"></div>
+
+    <!-- ── Text panel (right — RTL start side) ───────────────── -->
+    <div class="hs-content" id="HsContent">
+        {% for block in section.blocks %}
+        {%- assign idx = forloop.index0 -%}
+        <div class="hs-text-group{% if forloop.first %} active{% endif %}" data-index="{{ idx }}">
+            <div class="hs-eyebrow">
+                <span class="hs-num">{{ idx | plus: 1 | prepend: '0' | slice: -2, 2 }}</span>
+                <span class="hs-sep-line"></span>
+                <span class="hs-label">{{ block.settings.label | default: 'مجموعة جديدة' }}</span>
+            </div>
+            <h2 class="hs-title">{{ block.settings.title | default: 'عنوان الشريحة' }}</h2>
+            {% if block.settings.desc != blank %}
+                <p class="hs-desc">{{ block.settings.desc }}</p>
+            {% endif %}
+            <div class="hs-btns">
+                {% if block.settings.btn1_text != blank %}
+                    <a href="{{ block.settings.btn1_link | default: '/collections/all' }}" class="hs-btn-primary">{{ block.settings.btn1_text }}</a>
+                {% else %}
+                    <a href="/collections/all" class="hs-btn-primary">تسوق الآن</a>
+                {% endif %}
+                {% if block.settings.btn2_text != blank %}
+                    <a href="{{ block.settings.btn2_link | default: '/collections/all' }}" class="hs-btn-ghost">{{ block.settings.btn2_text }}</a>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <!-- Default text content when no blocks configured -->
+        <div class="hs-text-group active" data-index="0">
+            <div class="hs-eyebrow"><span class="hs-num">01</span><span class="hs-sep-line"></span><span class="hs-label">مجموعة جديدة</span></div>
+            <h2 class="hs-title">حقائب <em>فاخرة</em></h2>
+            <p class="hs-desc">أناقة لا تتوقف — حقائب ومحافظ من أرقى الماركات العالمية بأسعار مناسبة</p>
+            <div class="hs-btns"><a href="/collections/all" class="hs-btn-primary">تسوق الآن</a><a href="/collections/all" class="hs-btn-ghost">اكتشف المجموعة</a></div>
+        </div>
+        <div class="hs-text-group" data-index="1">
+            <div class="hs-eyebrow"><span class="hs-num">02</span><span class="hs-sep-line"></span><span class="hs-label">عطور راقية</span></div>
+            <h2 class="hs-title">عطور <em>مميزة</em></h2>
+            <p class="hs-desc">رائحتك توقيعك — اختر من مجموعتنا الحصرية من العطور الفاخرة</p>
+            <div class="hs-btns"><a href="/collections/all" class="hs-btn-primary">تسوق الآن</a><a href="/collections/all" class="hs-btn-ghost">اكتشف المجموعة</a></div>
+        </div>
+        <div class="hs-text-group" data-index="2">
+            <div class="hs-eyebrow"><span class="hs-num">03</span><span class="hs-sep-line"></span><span class="hs-label">إكسسوارات</span></div>
+            <h2 class="hs-title">أسلوب <em>متكامل</em></h2>
+            <p class="hs-desc">تكتمل إطلالتك بالتفاصيل — قبعات وإكسسوارات لكل مناسبة</p>
+            <div class="hs-btns"><a href="/collections/all" class="hs-btn-primary">تسوق الآن</a><a href="/collections/all" class="hs-btn-ghost">اكتشف المجموعة</a></div>
+        </div>
+        <div class="hs-text-group" data-index="3">
+            <div class="hs-eyebrow"><span class="hs-num">04</span><span class="hs-sep-line"></span><span class="hs-label">أحذية عصرية</span></div>
+            <h2 class="hs-title">خطواتك <em>بأسلوب</em></h2>
+            <p class="hs-desc">أحذية تجمع بين الراحة والأناقة — تصاميم عصرية لكل يوم</p>
+            <div class="hs-btns"><a href="/collections/all" class="hs-btn-primary">تسوق الآن</a><a href="/collections/all" class="hs-btn-ghost">اكتشف المجموعة</a></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ── Thumbnail strip (left side) ────────────────────────── -->
+    <div class="hs-thumbs" id="HsThumbs">
+        {% for block in section.blocks %}
+        {%- assign idx = forloop.index0 -%}
+        <button class="hs-thumb{% if forloop.first %} active{% endif %}" data-target="{{ idx }}" type="button">
+            {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | img_url: '300x' }}" alt="" loading="lazy">
+            {% else %}
+                {%- assign fb_images = 'bs-bag.jpg,bs-perfume.jpg,bs-cap.jpg,bs-shoes.jpg' | split: ',' -%}
+                {%- assign fb_img = fb_images[idx] | default: 'hero-image.jpg' -%}
+                <img src="{{ fb_img | asset_url }}" alt="" loading="lazy">
+            {% endif %}
+            <span class="hs-thumb-label">{{ block.settings.label | default: 'شريحة' }}</span>
+            <span class="hs-thumb-bar"></span>
+        </button>
+        {% else %}
+        <!-- Default thumbnails -->
+        <button class="hs-thumb active" data-target="0" type="button"><img src="{{ 'bs-bag.jpg'     | asset_url }}" alt="" loading="lazy"><span class="hs-thumb-label">حقائب</span><span class="hs-thumb-bar"></span></button>
+        <button class="hs-thumb"        data-target="1" type="button"><img src="{{ 'bs-perfume.jpg' | asset_url }}" alt="" loading="lazy"><span class="hs-thumb-label">عطور</span><span class="hs-thumb-bar"></span></button>
+        <button class="hs-thumb"        data-target="2" type="button"><img src="{{ 'bs-cap.jpg'     | asset_url }}" alt="" loading="lazy"><span class="hs-thumb-label">إكسسوارات</span><span class="hs-thumb-bar"></span></button>
+        <button class="hs-thumb"        data-target="3" type="button"><img src="{{ 'bs-shoes.jpg'   | asset_url }}" alt="" loading="lazy"><span class="hs-thumb-label">أحذية</span><span class="hs-thumb-bar"></span></button>
+        {% endfor %}
+    </div>
+
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+    <div class="hs-nav">
+        <button class="hs-arrow hs-prev" id="HsPrev" type="button" aria-label="السابق">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <div class="hs-counter">
+            <span class="hs-cur" id="HsCur">01</span>
+            <span class="hs-total" id="HsTotal">/ 04</span>
+        </div>
+        <button class="hs-arrow hs-next" id="HsNext" type="button" aria-label="التالي">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+    </div>
+
+    <!-- ── Auto-play progress bar ──────────────────────────────── -->
+    <div class="hs-progress-track">
+        <div class="hs-progress-fill" id="HsProgress"></div>
+    </div>
+
+    <!-- ── Scroll hint ─────────────────────────────────────────── -->
+    <div class="hs-scroll-hint" id="HsScrollHint">
+        <span></span>
+    </div>
+
+</section>
 
 <style>
-/* ── Sticky hero — content sections slide OVER it ─────────── */
-.hero-section {
+/* ═══════════════════════════════════════════════════════════
+   HERO SLIDER
+═══════════════════════════════════════════════════════════ */
+.hs-hero {
     position: sticky;
     top: 0;
     height: 100vh;
-    min-height: 560px;
-    z-index: 0;          /* category-pills + main have z-index:1, cover this */
+    min-height: 580px;
     overflow: hidden;
-    background: #07090f;
+    z-index: 0;
+    background: #05060a;
+    user-select: none;
 }
 
-/* ── Image: extra room at top so downward parallax never clips ─ */
-.hero-img {
+/* ── Slide layers ──────────────────────────────────────── */
+.hs-tracks { position: absolute; inset: 0; }
+
+.hs-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hs-slide.active { opacity: 1; }
+
+.hs-bg-img {
     position: absolute;
     inset: 0;
     width: 100%;
-    height: 124%;
-    top: -12%;
+    height: 100%;
     object-fit: cover;
-    object-position: center center;
-    will-change: transform;
-    /* Ken Burns — paused by JS once scroll starts */
-    animation: hero-breathe 13s ease-in-out infinite alternate;
+    object-position: center;
+    transform-origin: center;
 }
-@keyframes hero-breathe {
-    0%   { transform: scale(1.0); }
-    100% { transform: scale(1.07); }
+/* Ken Burns on active slide */
+.hs-slide.active .hs-bg-img {
+    animation: hs-kb 10s ease-in-out forwards;
 }
-.hero-img.js-active { animation-play-state: paused; }
+@keyframes hs-kb {
+    from { transform: scale(1.0)   translateX(0px); }
+    to   { transform: scale(1.07)  translateX(-12px); }
+}
 
-/* ── Overlays ──────────────────────────────────────────────── */
-.hero-overlay {
+/* ── Overlays ──────────────────────────────────────────── */
+.hs-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
     pointer-events: none;
     background:
-        radial-gradient(ellipse at center, transparent 38%, rgba(5,7,15,0.45) 100%),
-        linear-gradient(to top, rgba(5,7,15,0.62) 0%, transparent 55%),
-        linear-gradient(to bottom, transparent 82%, rgba(250,250,250,0.18) 100%);
+        linear-gradient(to left,  rgba(5,6,10,0.05) 0%,  rgba(5,6,10,0.80) 55%),
+        linear-gradient(to top,   rgba(5,6,10,0.65) 0%,  transparent 45%),
+        linear-gradient(to bottom, rgba(5,6,10,0.35) 0%, transparent 30%);
 }
-.hero-grain {
+.hs-grain {
     position: absolute;
     inset: 0;
     z-index: 3;
     pointer-events: none;
     mix-blend-mode: overlay;
-    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.055"/></svg>');
+    opacity: 0.4;
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.07"/></svg>');
 }
 
-/* ── Hero text ─────────────────────────────────────────────── */
-.hero-content {
+/* ── Text content (RTL: right side = start) ────────────── */
+.hs-content {
     position: absolute;
-    inset: 0;
-    z-index: 4;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 55%;
+    z-index: 10;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 3rem;
-    gap: 1.25rem;
+    align-items: center;
+    padding: 2rem 5% 8rem 4%;
     pointer-events: none;
 }
-.hero-title {
-    font-size: clamp(1.6rem, 4vw, 3.2rem);
+
+.hs-text-group {
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    width: 100%;
+    pointer-events: auto;
+}
+.hs-text-group.active { display: flex; }
+
+/* Staggered entrance animations */
+.hs-text-group.active .hs-eyebrow { animation: hs-up 0.65s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+.hs-text-group.active .hs-title   { animation: hs-up 0.75s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+.hs-text-group.active .hs-desc    { animation: hs-up 0.65s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+.hs-text-group.active .hs-btns    { animation: hs-up 0.65s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
+
+@keyframes hs-up {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Eyebrow row */
+.hs-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-direction: row-reverse;
+}
+.hs-num {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em;
+    font-family: monospace;
+}
+.hs-sep-line {
+    width: 36px;
+    height: 1.5px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 2px;
+}
+.hs-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* Title */
+.hs-title {
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
     font-weight: 900;
     color: #fff;
-    text-shadow: 0 2px 16px rgba(0,0,0,0.5);
-    pointer-events: auto;
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
 }
-.hero-subtitle {
-    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
-    color: rgba(255,255,255,0.82);
-    max-width: 400px;
-    pointer-events: auto;
+.hs-title em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.7);
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-.hero-cta {
+
+/* Description */
+.hs-desc {
+    color: rgba(255,255,255,0.62);
+    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+    line-height: 1.75;
+    max-width: 420px;
+    margin-bottom: 2.25rem;
+}
+
+/* CTA Buttons */
+.hs-btns {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+.hs-btn-primary {
     display: inline-flex;
     align-items: center;
+    padding: 0.85rem 2.2rem;
     background: #fff;
-    color: var(--text-dark);
+    color: #0f172a;
     font-weight: 800;
-    font-size: 1rem;
-    padding: 0.85rem 2rem;
-    border-radius: var(--radius-full);
+    font-size: 0.92rem;
+    border-radius: 99px;
     text-decoration: none;
-    transition: var(--transition);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    pointer-events: auto;
+    letter-spacing: 0.01em;
+    transition: background 0.28s, color 0.28s, transform 0.28s, box-shadow 0.28s;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
-.hero-cta:hover { background: var(--primary); color: #fff; transform: translateY(-2px); }
+.hs-btn-primary:hover {
+    background: #a29bfe;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(162,155,254,0.4);
+}
+.hs-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.85rem 2.2rem;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.82);
+    font-weight: 700;
+    font-size: 0.92rem;
+    border-radius: 99px;
+    text-decoration: none;
+    transition: border-color 0.28s, background 0.28s, color 0.28s, transform 0.28s;
+    backdrop-filter: blur(6px);
+}
+.hs-btn-ghost:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-3px);
+}
 
-/* ── Scroll hint ───────────────────────────────────────────── */
-.hero-scroll-hint {
+/* ── Thumbnail strip (left side) ─────────────────────────── */
+.hs-thumbs {
     position: absolute;
-    bottom: 2.5rem;
+    left: 2.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.hs-thumb {
+    width: 92px;
+    height: 118px;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    background: #0d0e12;
+    transition: opacity 0.4s, transform 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s;
+    opacity: 0.45;
+    flex-shrink: 0;
+}
+.hs-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+}
+.hs-thumb-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #fff;
+    padding: 0.45rem 0.4rem 0.4rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    text-align: center;
+    z-index: 2;
+    letter-spacing: 0.04em;
+}
+/* Active progress line at bottom of thumb */
+.hs-thumb-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2.5px;
+    background: #a29bfe;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s;
+    z-index: 3;
+}
+
+.hs-thumb.active {
+    opacity: 1;
+    border-color: rgba(255,255,255,0.65);
+    transform: scale(1.1);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45), 0 0 0 1px rgba(162,155,254,0.25);
+}
+.hs-thumb.active img { transform: scale(1.06); }
+.hs-thumb.active .hs-thumb-bar { transform: scaleX(1); }
+.hs-thumb:hover:not(.active) {
+    opacity: 0.75;
+    transform: scale(1.05);
+}
+
+/* ── Navigation ──────────────────────────────────────────── */
+.hs-nav {
+    position: absolute;
+    bottom: 3.5rem;
+    right: 5%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+.hs-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.28s, border-color 0.28s, transform 0.28s;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.hs-arrow:hover {
+    background: rgba(162,155,254,0.25);
+    border-color: rgba(162,155,254,0.8);
+    transform: scale(1.1);
+}
+.hs-arrow:active { transform: scale(0.96); }
+.hs-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+.hs-cur {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    font-family: monospace;
+    line-height: 1;
+}
+.hs-total {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.38);
+    font-family: monospace;
+}
+
+/* ── Progress bar (bottom edge) ─────────────────────────── */
+.hs-progress-track {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    z-index: 10;
+}
+.hs-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #6c5ce7, #a29bfe, #fff);
+    border-radius: 2px;
+}
+
+/* ── Scroll hint ─────────────────────────────────────────── */
+.hs-scroll-hint {
+    position: absolute;
+    bottom: 3.75rem;
     left: 50%;
     transform: translateX(-50%);
-    color: rgba(255,255,255,0.6);
-    z-index: 5;
-    transition: opacity 0.5s ease;
-    animation: hint-bounce 2s ease-in-out infinite;
+    z-index: 10;
+    width: 26px;
+    height: 42px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+    transition: opacity 0.5s;
 }
-.hero-scroll-hint i,
-.hero-scroll-hint svg { width: 34px; height: 34px; }
-@keyframes hint-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0);    opacity: 0.6; }
-    50%       { transform: translateX(-50%) translateY(10px); opacity: 1;   }
+.hs-scroll-hint span {
+    width: 3px;
+    height: 9px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    animation: hs-scroll-dot 1.8s ease-in-out infinite;
+}
+@keyframes hs-scroll-dot {
+    0%   { transform: translateY(0);   opacity: 1; }
+    80%  { transform: translateY(14px); opacity: 0; }
+    100% { transform: translateY(0);   opacity: 0; }
 }
 
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .hs-content { width: 65%; padding-right: 5%; }
+    .hs-thumbs  { left: 1.5%; }
+    .hs-thumb   { width: 78px; height: 100px; }
+}
 @media (max-width: 768px) {
-    .hero-content {
-        padding: 1.5rem 1.5rem 5rem;
-        align-items: center;
+    .hs-content {
+        width: 100%;
+        padding: 2rem 1.5rem 9rem 1.5rem;
         justify-content: flex-end;
+        align-items: flex-end;
     }
-    .hero-subtitle { max-width: 100%; }
+    .hs-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+    .hs-desc  { font-size: 0.88rem; margin-bottom: 1.5rem; max-width: 100%; }
+    .hs-thumbs {
+        top: auto;
+        bottom: 5.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        gap: 0.6rem;
+    }
+    .hs-thumb  { width: 68px; height: 86px; border-radius: 10px; }
+    .hs-thumb.active { transform: scale(1.07); }
+    .hs-nav {
+        bottom: 1.75rem;
+        right: 50%;
+        transform: translateX(50%);
+    }
+    .hs-scroll-hint { display: none; }
+    .hs-overlay {
+        background:
+            linear-gradient(to top, rgba(5,6,10,0.82) 0%, rgba(5,6,10,0.45) 55%, transparent 100%);
+    }
+}
+@media (max-width: 480px) {
+    .hs-thumb { width: 58px; height: 74px; }
+    .hs-thumb-label { font-size: 0.55rem; }
+    .hs-btns { gap: 0.6rem; }
+    .hs-btn-primary, .hs-btn-ghost { padding: 0.75rem 1.5rem; font-size: 0.85rem; }
 }
 </style>
 
 <script>
-/* ── Parallax: image zooms & shifts as content slides over ── */
 (function () {
-    var img  = document.getElementById('HeroImage');
-    var hint = document.getElementById('HeroScrollHint');
-    if (!img) return;
+    var hero    = document.getElementById('HeroSlider');
+    if (!hero) return;
 
-    var ticking = false;
+    var slides  = hero.querySelectorAll('.hs-slide');
+    var texts   = hero.querySelectorAll('.hs-text-group');
+    var thumbs  = hero.querySelectorAll('.hs-thumb');
+    var prevBtn = document.getElementById('HsPrev');
+    var nextBtn = document.getElementById('HsNext');
+    var curEl   = document.getElementById('HsCur');
+    var totEl   = document.getElementById('HsTotal');
+    var progFil = document.getElementById('HsProgress');
+    var hint    = document.getElementById('HsScrollHint');
 
-    function update() {
-        ticking   = false;
-        var sy    = window.scrollY;
-        var viewH = window.innerHeight;
-        var p     = Math.min(1, sy / viewH);          /* 0 → 1 over one viewport */
+    var N        = slides.length;
+    var current  = 0;
+    var autoTimer = null;
+    var progTimer = null;
+    var INTERVAL  = 5500; /* ms between slides */
 
-        /* Image zooms subtly and drifts DOWN — depth-pull parallax */
-        var scale = 1.02 + p * 0.06;
-        var shift = p * 8;                             /* up to +8% downward */
-        img.style.transform = 'scale(' + scale.toFixed(4) + ') translateY(' + shift.toFixed(2) + '%)';
-        img.classList.add('js-active');
+    if (totEl) totEl.textContent = '/ ' + (N < 10 ? '0' + N : N);
 
-        if (hint) hint.style.opacity = sy > 80 ? '0' : '1';
+    /* ── Transition to a slide ─────────────────────────── */
+    function goTo(idx) {
+        idx = ((idx % N) + N) % N;
+        if (idx === current && slides[idx].classList.contains('active')) return;
+
+        slides[current].classList.remove('active');
+        texts[current].classList.remove('active');
+        thumbs[current].classList.remove('active');
+
+        current = idx;
+
+        slides[current].classList.add('active');
+        texts[current].classList.add('active');
+        thumbs[current].classList.add('active');
+
+        if (curEl) curEl.textContent = current + 1 < 10 ? '0' + (current + 1) : '' + (current + 1);
+
+        resetProgress();
     }
 
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    /* ── Auto-play ─────────────────────────────────────── */
+    function startAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(next, INTERVAL);
+    }
+    function stopAuto() {
+        clearInterval(autoTimer);
+        clearInterval(progTimer);
+        if (progFil) progFil.style.transition = 'none';
+    }
+
+    /* ── Progress bar ──────────────────────────────────── */
+    function resetProgress() {
+        clearInterval(progTimer);
+        if (!progFil) return;
+        progFil.style.transition = 'none';
+        progFil.style.width = '0%';
+        /* rAF to let the browser paint the 0% before animating */
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                progFil.style.transition = 'width ' + INTERVAL + 'ms linear';
+                progFil.style.width = '100%';
+            });
+        });
+    }
+
+    /* ── Events ────────────────────────────────────────── */
+    if (prevBtn) prevBtn.addEventListener('click', function () { prev(); startAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { next(); startAuto(); });
+
+    thumbs.forEach(function (thumb) {
+        thumb.addEventListener('click', function () {
+            goTo(parseInt(this.dataset.target, 10));
+            startAuto();
+        });
+    });
+
+    /* Pause on mouse hover */
+    hero.addEventListener('mouseenter', stopAuto);
+    hero.addEventListener('mouseleave', function () { startAuto(); resetProgress(); });
+
+    /* Touch / swipe */
+    var touchX = 0;
+    hero.addEventListener('touchstart', function (e) {
+        touchX = e.touches[0].clientX;
+    }, { passive: true });
+    hero.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 48) { dx > 0 ? prev() : next(); startAuto(); }
+    });
+
+    /* Hide scroll hint after first scroll */
     window.addEventListener('scroll', function () {
-        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        if (hint) hint.style.opacity = window.scrollY > 60 ? '0' : '1';
     }, { passive: true });
 
-    update();
+    /* ── Kick off ──────────────────────────────────────── */
+    startAuto();
+    resetProgress();
 })();
 </script>
 
 {% schema %}
 {
-  "name": "هيرو",
-  "settings": [
+  "name": "هيرو سلايدر",
+  "blocks": [
     {
-      "type": "checkbox",
-      "id": "show_overlay",
-      "label": "إظهار نص فوق الصورة",
-      "default": false
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "العنوان الرئيسي",
-      "default": "الجديد في Shop Five"
-    },
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "النص الفرعي",
-      "default": "اكتشف أحدث التصاميم لهذا الموسم"
-    },
-    {
-      "type": "text",
-      "id": "btn_text",
-      "label": "نص الزر"
-    },
-    {
-      "type": "url",
-      "id": "btn_link",
-      "label": "رابط الزر"
+      "type": "slide",
+      "name": "شريحة",
+      "settings": [
+        { "type": "image_picker", "id": "image",     "label": "صورة الشريحة" },
+        { "type": "text",         "id": "label",     "label": "التصنيف (صغير)", "default": "مجموعة جديدة" },
+        { "type": "text",         "id": "title",     "label": "العنوان الكبير", "default": "حقائب فاخرة" },
+        { "type": "textarea",     "id": "desc",      "label": "الوصف" },
+        { "type": "text",         "id": "btn1_text", "label": "نص الزر الأول",  "default": "تسوق الآن" },
+        { "type": "url",          "id": "btn1_link", "label": "رابط الزر الأول" },
+        { "type": "text",         "id": "btn2_text", "label": "نص الزر الثاني", "default": "اكتشف المجموعة" },
+        { "type": "url",          "id": "btn2_link", "label": "رابط الزر الثاني" }
+      ]
     }
   ],
-  "presets": [{ "name": "هيرو" }]
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "هيرو سلايدر",
+      "blocks": [
+        { "type": "slide", "settings": { "label": "مجموعة جديدة",  "title": "حقائب فاخرة",    "desc": "أناقة لا تتوقف — حقائب ومحافظ من أرقى الماركات", "btn1_text": "تسوق الآن", "btn2_text": "اكتشف المجموعة" } },
+        { "type": "slide", "settings": { "label": "عطور راقية",    "title": "عطور مميزة",      "desc": "رائحتك توقيعك — اختر من مجموعتنا الحصرية", "btn1_text": "تسوق الآن", "btn2_text": "اكتشف المجموعة" } },
+        { "type": "slide", "settings": { "label": "إكسسوارات",    "title": "أسلوب متكامل",    "desc": "تكتمل إطلالتك بالتفاصيل — قبعات وإكسسوارات لكل مناسبة", "btn1_text": "تسوق الآن", "btn2_text": "اكتشف المجموعة" } },
+        { "type": "slide", "settings": { "label": "أحذية عصرية",  "title": "خطواتك بأسلوب",  "desc": "أحذية تجمع بين الراحة والأناقة — تصاميم عصرية لكل يوم", "btn1_text": "تسوق الآن", "btn2_text": "اكتشف المجموعة" } }
+      ]
+    }
+  ]
 }
 {% endschema %}
