@@ -7,28 +7,27 @@
         <h2 class="fc-title">{{ section.settings.title }}</h2>
         <p class="fc-subtitle">{{ section.settings.subtitle }}</p>
       </div>
-      {%- if section.settings.collection_url != blank -%}
-        <a href="{{ section.settings.collection_url }}" class="btn-view-all btn-view-all--light">
+      {%- assign fc_collection = collections[section.settings.collection] -%}
+      {%- if fc_collection != blank -%}
+        <a href="{{ fc_collection.url }}" class="btn-view-all btn-view-all--light">
           عرض الكل <i data-lucide="arrow-left"></i>
         </a>
       {%- endif -%}
     </div>
 
-    <div class="fc-grid">
-      {%- assign product_ids = 'product_1,product_2,product_3,product_4' | split: ',' -%}
-      {%- for pid in product_ids -%}
-        {%- assign card_product = all_products[section.settings[pid]] -%}
-        {%- if card_product != blank -%}
+    {%- if fc_collection != blank -%}
+      <div class="fc-grid">
+        {%- for card_product in fc_collection.products limit: 4 -%}
           <article class="fc-card" data-index="{{ forloop.index }}">
             <span class="fc-badge">{{ section.settings.badge_text }}</span>
 
             {%- if card_product.featured_image -%}
               <img
-                src="{{ card_product.featured_image | image_url: width: 600 }}"
+                src="{{ card_product.featured_image | image_url: width: 500 }}"
                 alt="{{ card_product.title | escape }}"
                 class="fc-img"
                 loading="lazy"
-                width="600"
+                width="500"
               >
             {%- else -%}
               <div class="fc-img fc-img--placeholder"></div>
@@ -50,9 +49,9 @@
               </a>
             </div>
           </article>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
 
   </div>
 </section>
@@ -80,35 +79,15 @@
       "default": "منتجات مختارة بعناية لك"
     },
     {
-      "type": "url",
-      "id": "collection_url",
-      "label": "رابط عرض الكل"
+      "type": "collection",
+      "id": "collection",
+      "label": "اختر الكولكشن"
     },
     {
       "type": "text",
       "id": "badge_text",
       "label": "نص الشارة على الكارت",
       "default": "مميز"
-    },
-    {
-      "type": "product",
-      "id": "product_1",
-      "label": "المنتج الأول"
-    },
-    {
-      "type": "product",
-      "id": "product_2",
-      "label": "المنتج الثاني"
-    },
-    {
-      "type": "product",
-      "id": "product_3",
-      "label": "المنتج الثالث"
-    },
-    {
-      "type": "product",
-      "id": "product_4",
-      "label": "المنتج الرابع"
     }
   ],
   "presets": [
