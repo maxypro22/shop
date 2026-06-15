@@ -1293,6 +1293,40 @@ a.pagination-item:hover {
     background: linear-gradient(180deg, #030e0c 0%, #051812 100%);
 }
 
+/* ── Light cream scheme (#f9f4ee) ─────────────────────────── */
+.fc-wrap--light {
+    background: #f9f4ee;
+}
+.fc-wrap--light::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.12), transparent);
+    pointer-events: none;
+}
+.fc-wrap--light .fc-eyebrow {
+    color: #1a1a1a;
+}
+.fc-wrap--light .fc-title {
+    color: #0f172a;
+}
+.fc-wrap--light .fc-subtitle {
+    color: #6b7280;
+}
+.fc-wrap--light .btn-view-all--light {
+    border-color: rgba(15, 23, 42, 0.3);
+    color: #0f172a;
+}
+.fc-wrap--light .btn-view-all--light:hover {
+    background: #0f172a;
+    color: #f9f4ee;
+    border-color: #0f172a;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15);
+}
+
 /* Colored accent line at top of each fc section for color contrast */
 .fc-wrap--navy::before,
 .fc-wrap--plum::before,
