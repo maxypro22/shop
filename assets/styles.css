@@ -1496,6 +1496,163 @@ a.pagination-item:hover {
 @media (max-width: 1024px) {
     .fc-grid { grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
 }
+
+/* ── Panoramic Banner — Luxury ───────────────────────────── */
+.pb-wrap {
+    position: relative;
+    width: 100%;
+    height: 540px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Image — slow Ken Burns */
+.pb-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    animation: pbZoom 18s ease-in-out infinite alternate;
+    will-change: transform;
+}
+@keyframes pbZoom {
+    from { transform: scale(1);    }
+    to   { transform: scale(1.07); }
+}
+
+/* Layer 1 — dark vignette overlay */
+.pb-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(ellipse at center, rgba(4,4,14,0.42) 0%, rgba(4,4,14,0.72) 100%),
+        linear-gradient(to top,  rgba(4,4,14,0.7) 0%, transparent 45%),
+        linear-gradient(to bottom, rgba(4,4,14,0.55) 0%, transparent 35%);
+}
+
+/* Layer 2 — subtle film grain via SVG noise */
+.pb-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+    pointer-events: none;
+}
+
+/* Layer 3 — content */
+.pb-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    direction: rtl;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.pb-eyebrow {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #c9a96e;
+    margin-bottom: 1.1rem;
+    animation: pbFadeUp 0.9s 0.1s both;
+}
+
+/* Gold divider with diamond */
+.pb-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 260px;
+    margin-bottom: 1.1rem;
+    animation: pbFadeUp 0.9s 0.2s both;
+}
+.pb-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c9a96e, transparent);
+    opacity: 0.7;
+}
+.pb-diamond {
+    width: 7px;
+    height: 7px;
+    background: #c9a96e;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+}
+
+.pb-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.9rem;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    animation: pbFadeUp 0.9s 0.3s both;
+}
+
+.pb-subtitle {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.65);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+    animation: pbFadeUp 0.9s 0.4s both;
+}
+
+.pb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(110deg, #c9a96e 0%, #f0d080 100%);
+    color: #060610;
+    border-radius: var(--radius-full);
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: var(--transition);
+    animation: pbFadeUp 0.9s 0.5s both;
+}
+.pb-btn i { width: 16px; height: 16px; }
+.pb-btn:hover {
+    background: #ffffff;
+    color: #060610;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(201, 169, 110, 0.4);
+}
+
+@keyframes pbFadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pb-wrap { height: 420px; }
+    .pb-title { font-size: clamp(1.6rem, 7vw, 2.4rem); }
+    .pb-subtitle { font-size: 0.95rem; }
+}
+@media (max-width: 480px) {
+    .pb-wrap { height: 360px; }
+    .pb-divider { width: 200px; }
+    .pb-subtitle { display: none; }
+}
 @media (max-width: 768px) {
     .fc-wrap { padding: 3rem 0; }
     .fc-header { flex-direction: column; align-items: flex-start; }
