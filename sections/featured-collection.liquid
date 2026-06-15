@@ -1,0 +1,120 @@
+<section class="fc-wrap">
+  <div class="main-container">
+
+    <div class="fc-header">
+      <div class="fc-header-text">
+        <span class="fc-eyebrow">{{ section.settings.eyebrow }}</span>
+        <h2 class="fc-title">{{ section.settings.title }}</h2>
+        <p class="fc-subtitle">{{ section.settings.subtitle }}</p>
+      </div>
+      {%- if section.settings.collection_url != blank -%}
+        <a href="{{ section.settings.collection_url }}" class="btn-view-all btn-view-all--light">
+          عرض الكل <i data-lucide="arrow-left"></i>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <div class="fc-grid">
+      {%- assign product_ids = 'product_1,product_2,product_3,product_4' | split: ',' -%}
+      {%- for pid in product_ids -%}
+        {%- assign card_product = all_products[section.settings[pid]] -%}
+        {%- if card_product != blank -%}
+          <article class="fc-card" data-index="{{ forloop.index }}">
+            <span class="fc-badge">{{ section.settings.badge_text }}</span>
+
+            {%- if card_product.featured_image -%}
+              <img
+                src="{{ card_product.featured_image | image_url: width: 600 }}"
+                alt="{{ card_product.title | escape }}"
+                class="fc-img"
+                loading="lazy"
+                width="600"
+              >
+            {%- else -%}
+              <div class="fc-img fc-img--placeholder"></div>
+            {%- endif -%}
+
+            <div class="fc-card-overlay">
+              {%- if card_product.type != blank -%}
+                <span class="fc-cat">{{ card_product.type }}</span>
+              {%- endif -%}
+              <h3 class="fc-name">{{ card_product.title }}</h3>
+              <p class="fc-price">
+                {%- if card_product.compare_at_price > card_product.price -%}
+                  <span class="fc-price-was">{{ card_product.compare_at_price | money }}</span>
+                {%- endif -%}
+                {{ card_product.price | money }}
+              </p>
+              <a href="{{ card_product.url }}" class="fc-btn">
+                عرض المنتج <i data-lucide="arrow-left"></i>
+              </a>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "كولكشن مميز",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "النص فوق العنوان",
+      "default": "EXCLUSIVE COLLECTION"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "العنوان الرئيسي",
+      "default": "كولكشن مميز"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "العنوان الفرعي",
+      "default": "منتجات مختارة بعناية لك"
+    },
+    {
+      "type": "url",
+      "id": "collection_url",
+      "label": "رابط عرض الكل"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "نص الشارة على الكارت",
+      "default": "مميز"
+    },
+    {
+      "type": "product",
+      "id": "product_1",
+      "label": "المنتج الأول"
+    },
+    {
+      "type": "product",
+      "id": "product_2",
+      "label": "المنتج الثاني"
+    },
+    {
+      "type": "product",
+      "id": "product_3",
+      "label": "المنتج الثالث"
+    },
+    {
+      "type": "product",
+      "id": "product_4",
+      "label": "المنتج الرابع"
+    }
+  ],
+  "presets": [
+    {
+      "name": "كولكشن مميز"
+    }
+  ]
+}
+{% endschema %}
