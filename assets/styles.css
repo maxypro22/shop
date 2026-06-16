@@ -489,7 +489,7 @@ button {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
-    align-items: start;
+    align-items: stretch;
 }
 
 .product-card {
@@ -621,7 +621,7 @@ button {
 }
 
 .card-footer {
-    margin-top: auto;
+    margin-top: 0;
 }
 
 .price-action {

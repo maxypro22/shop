@@ -43,10 +43,10 @@
                 <div class="stock-pill stock-low"><span class="stock-dot"></span>{{ total_stock }} متبقية</div>
             {%- endif -%}
         {%- endif -%}
-        <a href="{{ product.url | within: collection }}" style="text-decoration: none; color: inherit; flex: 1;">
+        <a href="{{ product.url | within: collection }}" style="text-decoration: none; color: inherit;">
             <h3 class="product-title">{{ product.title }}</h3>
         </a>
-        <div class="product-price-wrapper" style="margin-bottom: 1rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
+        <div class="product-price-wrapper" style="margin-top: auto; margin-bottom: 1rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
             <span>{{ product.price | money }}</span>
             {% if product.compare_at_price > product.price %}
                 <span class="old-price" style="font-weight: normal; font-size: 0.85rem; text-decoration: line-through; color: var(--text-light);">{{ product.compare_at_price | money }}</span>
