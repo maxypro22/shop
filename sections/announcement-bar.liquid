@@ -1,0 +1,66 @@
+{%- if section.settings.text != blank -%}
+<div class="ann-bar" style="--ann-speed: {{ section.settings.speed }}s">
+  <div class="ann-track" aria-label="{{ section.settings.text }}">
+    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
+    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
+    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
+  </div>
+</div>
+{%- endif -%}
+
+<style>
+.ann-bar {
+    background: #000;
+    color: #fff;
+    height: 34px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.ann-track {
+    display: flex;
+    white-space: nowrap;
+    animation: ann-scroll var(--ann-speed, 28s) linear infinite;
+    will-change: transform;
+}
+.ann-text {
+    font-family: var(--font-family, 'Cairo', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0 4rem;
+    color: rgba(255,255,255,0.92);
+    flex-shrink: 0;
+}
+@keyframes ann-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-33.333%); }
+}
+.ann-bar:hover .ann-track { animation-play-state: paused; }
+</style>
+
+{% schema %}
+{
+  "name": "شريط الإعلانات",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "نص الإعلان",
+      "default": "🎉 عروض حصرية — شحن مجاني على الطلبات فوق 200 ر.ق ✨  •  تسوق الآن وادخل كود SHOP5  •  جودة فاخرة وأسعار منافسة"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "سرعة الحركة (ثانية)",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "default": 28
+    }
+  ],
+  "presets": [{ "name": "شريط الإعلانات" }]
+}
+{% endschema %}

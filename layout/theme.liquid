@@ -35,7 +35,17 @@
 <body>
 
     <div style="position: sticky; top: 0; z-index: 50; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color);">
+        {% section 'announcement-bar' %}
         {% section 'header' %}
+        <div id="SearchDrop" class="search-drop" aria-hidden="true" role="search">
+            <form action="/search" method="get" class="search-drop-form">
+                <input type="search" name="q" class="search-drop-input" id="SearchDropInput"
+                       placeholder="ابحث عن المنتجات، الماركات..." autocomplete="off">
+                <button type="submit" class="search-drop-btn" aria-label="بحث">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </button>
+            </form>
+        </div>
     </div>
 
     {% if template == 'index' %}

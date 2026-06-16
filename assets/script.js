@@ -151,6 +151,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 })();
 
+// Search dropdown
+(function () {
+    var searchDrop  = document.getElementById('SearchDrop');
+    var searchInput = document.getElementById('SearchDropInput');
+    if (!searchDrop) return;
+
+    function openSearch() {
+        searchDrop.classList.add('open');
+        searchDrop.setAttribute('aria-hidden', 'false');
+        document.querySelectorAll('.search-toggle-btn').forEach(function (b) { b.classList.add('sd-open'); });
+        if (searchInput) setTimeout(function () { searchInput.focus(); }, 80);
+    }
+
+    function closeSearch() {
+        searchDrop.classList.remove('open');
+        searchDrop.setAttribute('aria-hidden', 'true');
+        document.querySelectorAll('.search-toggle-btn').forEach(function (b) { b.classList.remove('sd-open'); });
+    }
+
+    document.querySelectorAll('.search-toggle-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            searchDrop.classList.contains('open') ? closeSearch() : openSearch();
+        });
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!searchDrop.contains(e.target) && !e.target.closest('.search-toggle-btn')) {
+            closeSearch();
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeSearch();
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {});
+    }
+})();
+
 // Scroll Reveal
 (function () {
     if (!window.IntersectionObserver) return;
