@@ -1885,6 +1885,16 @@ a.pagination-item:hover {
     .fc-btn { padding: 0.5rem 1rem; font-size: 0.78rem; }
     .fc-card-overlay { padding: 1.25rem 1rem 1rem; }
     .fc-eyebrow { font-size: 0.62rem; letter-spacing: 2.5px; }
+    /* Show the full product image on mobile instead of cropping */
+    .fc-card {
+        background: #f5f0ea;
+        aspect-ratio: 1 / 1;
+    }
+    .fc-img {
+        object-fit: contain;
+        object-position: center center;
+        padding: 0.5rem;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════
