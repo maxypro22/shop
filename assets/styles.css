@@ -1888,7 +1888,7 @@ a.pagination-item:hover {
     /* Show the full product image on mobile instead of cropping */
     .fc-card {
         background: #f5f0ea;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 3 / 4;
     }
     .fc-img {
         object-fit: contain;
