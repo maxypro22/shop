@@ -1,66 +1,101 @@
-{%- if section.settings.text != blank -%}
-<div class="ann-bar" style="--ann-speed: {{ section.settings.speed }}s">
-  <div class="ann-track" aria-label="{{ section.settings.text }}">
-    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
-    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
-    <span class="ann-text" aria-hidden="true">{{ section.settings.text }}</span>
-  </div>
-</div>
+{%- assign ann_text = section.settings.text -%}
+{%- if ann_text == blank -%}
+  {%- assign ann_text = "🛍️ توصيل لجميع مناطق الدوحة (قطر) خلال أربع ساعات فقط - شوب فايف سجل تجاري رقم 156821" -%}
 {%- endif -%}
+
+<div class="ann-bar">
+  <div class="ann-fade ann-fade--start"></div>
+  <div class="ann-track">
+    <span class="ann-item">{{ ann_text }}</span>
+    <span class="ann-item" aria-hidden="true">{{ ann_text }}</span>
+    <span class="ann-item" aria-hidden="true">{{ ann_text }}</span>
+  </div>
+  <div class="ann-fade ann-fade--end"></div>
+</div>
 
 <style>
 .ann-bar {
-    background: #000;
-    color: #fff;
-    height: 34px;
+    position: relative;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    height: 38px;
     overflow: hidden;
     display: flex;
     align-items: center;
     width: 100%;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .ann-track {
     display: flex;
     white-space: nowrap;
-    animation: ann-scroll var(--ann-speed, 28s) linear infinite;
+    animation: ann-scroll 32s linear infinite;
     will-change: transform;
+    align-items: center;
 }
-.ann-text {
+.ann-item {
     font-family: var(--font-family, 'Cairo', sans-serif);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    padding: 0 4rem;
-    color: rgba(255,255,255,0.92);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+    padding: 0 5rem;
     flex-shrink: 0;
+    direction: rtl;
+    letter-spacing: 0.01em;
+    position: relative;
+}
+/* Subtle shimmer sweep on each text copy */
+.ann-item::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.7) 50%, transparent 70%);
+    animation: ann-shine 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes ann-shine {
+    0%   { left: -75%; }
+    60%  { left: 125%; }
+    100% { left: 125%; }
 }
 @keyframes ann-scroll {
     from { transform: translateX(0); }
     to   { transform: translateX(-33.333%); }
 }
 .ann-bar:hover .ann-track { animation-play-state: paused; }
+/* Fade-out edges so text disappears smoothly */
+.ann-fade {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 72px;
+    z-index: 5;
+    pointer-events: none;
+}
+.ann-fade--start {
+    right: 0;
+    background: linear-gradient(to left, #ffffff 20%, transparent 100%);
+}
+.ann-fade--end {
+    left: 0;
+    background: linear-gradient(to right, #ffffff 20%, transparent 100%);
+}
+@media (max-width: 640px) {
+    .ann-bar { height: 34px; }
+    .ann-item { font-size: 0.76rem; padding: 0 3rem; }
+    .ann-fade { width: 40px; }
+}
 </style>
 
 {% schema %}
 {
-  "name": "شريط الإعلانات",
+  "name": "Announcement Bar",
   "settings": [
     {
       "type": "text",
       "id": "text",
-      "label": "نص الإعلان",
-      "default": "🎉 عروض حصرية — شحن مجاني على الطلبات فوق 200 ر.ق ✨  •  تسوق الآن وادخل كود SHOP5  •  جودة فاخرة وأسعار منافسة"
-    },
-    {
-      "type": "range",
-      "id": "speed",
-      "label": "سرعة الحركة (ثانية)",
-      "min": 10,
-      "max": 60,
-      "step": 5,
-      "default": 28
+      "label": "Announcement Text",
+      "info": "Leave blank to use the default text"
     }
-  ],
-  "presets": [{ "name": "شريط الإعلانات" }]
+  ]
 }
 {% endschema %}

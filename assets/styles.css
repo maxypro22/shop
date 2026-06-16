@@ -1888,12 +1888,8 @@ a.pagination-item:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ANNOUNCEMENT BAR
+   ANNOUNCEMENT BAR — styles live in section file
 ═══════════════════════════════════════════════════════════ */
-/* (main styles are inline in the section; these are overrides) */
-@media (max-width: 480px) {
-    .ann-text { font-size: 0.73rem; padding: 0 2.5rem; }
-}
 
 /* ═══════════════════════════════════════════════════════════
    HEADER — ICON ALIGNMENT FIX
