@@ -130,26 +130,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (modal) document.body.appendChild(modal);
 });
 
-// Footer accordion — mobile only
-(function () {
-    function initFooterAccordion() {
-        if (window.innerWidth > 640) return;
-        document.querySelectorAll('.footer-col .footer-heading').forEach(function (heading) {
-            if (heading.dataset.accordionReady) return;
-            heading.dataset.accordionReady = '1';
-            heading.addEventListener('click', function () {
-                var col = heading.closest('.footer-col');
-                if (!col) return;
-                col.classList.toggle('accordion-open');
-            });
-        });
-    }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initFooterAccordion);
-    } else {
-        initFooterAccordion();
-    }
-})();
+// Footer accordion — event delegation, works on first click without any timing dependency
+document.addEventListener('click', function (e) {
+    if (window.innerWidth > 640) return;
+    var heading = e.target.closest && e.target.closest('.footer-col .footer-heading');
+    if (!heading) return;
+    var col = heading.closest('.footer-col');
+    if (col) col.classList.toggle('accordion-open');
+});
 
 // Search dropdown
 (function () {

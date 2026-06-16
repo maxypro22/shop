@@ -6,9 +6,9 @@
 <div class="ann-bar">
   <div class="ann-fade ann-fade--start"></div>
   <div class="ann-track">
-    <span class="ann-item">{{ ann_text }}</span>
-    <span class="ann-item" aria-hidden="true">{{ ann_text }}</span>
-    <span class="ann-item" aria-hidden="true">{{ ann_text }}</span>
+    <span class="ann-item">{{ ann_text }}<span class="ann-sep" aria-hidden="true">&#160;&#160;•&#160;&#160;</span></span>
+    <span class="ann-item" aria-hidden="true">{{ ann_text }}<span class="ann-sep" aria-hidden="true">&#160;&#160;•&#160;&#160;</span></span>
+    <span class="ann-item" aria-hidden="true">{{ ann_text }}<span class="ann-sep" aria-hidden="true">&#160;&#160;•&#160;&#160;</span></span>
   </div>
   <div class="ann-fade ann-fade--end"></div>
 </div>
@@ -27,7 +27,7 @@
 .ann-track {
     display: flex;
     white-space: nowrap;
-    animation: ann-scroll 32s linear infinite;
+    animation: ann-scroll 16s linear infinite;
     will-change: transform;
     align-items: center;
 }
@@ -36,11 +36,15 @@
     font-size: 0.82rem;
     font-weight: 700;
     color: #0f172a;
-    padding: 0 5rem;
+    padding: 0;
     flex-shrink: 0;
     direction: rtl;
     letter-spacing: 0.01em;
     position: relative;
+}
+.ann-sep {
+    color: #c9a96e;
+    font-weight: 900;
 }
 /* Subtle shimmer sweep on each text copy */
 .ann-item::after {
@@ -81,7 +85,7 @@
 }
 @media (max-width: 640px) {
     .ann-bar { height: 34px; }
-    .ann-item { font-size: 0.76rem; padding: 0 3rem; }
+    .ann-item { font-size: 0.76rem; }
     .ann-fade { width: 40px; }
 }
 </style>
