@@ -208,24 +208,22 @@ document.addEventListener('click', function (e) {
     }
 
     function setupReveals() {
-        // Stagger children inside grids
-        document.querySelectorAll('.product-grid, .bs-grid, .features-grid, .fc-grid').forEach(function (grid) {
+        // Stagger children inside grids (product cards, best seller cards, feature cards)
+        document.querySelectorAll('.product-grid, .bs-grid, .features-grid').forEach(function (grid) {
             Array.from(grid.children).forEach(function (child, i) {
-                addReveal(child, i * 80);
+                addReveal(child, i * 90);
             });
         });
 
-        // Section-level reveals
+        // Individual section-level reveals
         [
             '.bs-header',
             '.features-header',
-            '.fc-header',
             '.filter-section',
             '.section-title',
             '.product-gallery',
             '.product-info',
             '.app-download-wrapper',
-            '.pb-wrap',
             '.pagination-wrapper'
         ].forEach(function (sel) {
             document.querySelectorAll(sel).forEach(function (el) {
@@ -240,50 +238,3 @@ document.addEventListener('click', function (e) {
         setupReveals();
     }
 })();
-
-// FC card — heart wishlist toggle
-document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.fc-icon-btn');
-    if (!btn) return;
-    e.stopPropagation();
-    btn.classList.toggle('active');
-    var icon = btn.querySelector('i');
-    if (icon) {
-        icon.style.fill = btn.classList.contains('active') ? '#ef4444' : 'none';
-        icon.style.color = btn.classList.contains('active') ? '#ef4444' : '#333';
-    }
-});
-
-// FC card — add to cart (AJAX, no page reload)
-document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.fc-add-cart');
-    if (!btn) return;
-    var variantId = btn.dataset.variant;
-    if (!variantId) return;
-    var span = btn.querySelector('span');
-    var origText = span ? span.textContent : '';
-    btn.disabled = true;
-    if (span) span.textContent = '...';
-    fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-        body: JSON.stringify({ id: parseInt(variantId, 10), quantity: 1 })
-    }).then(function (res) {
-        if (!res.ok) throw new Error('cart error');
-        if (span) span.textContent = 'تمت الإضافة ✓';
-        var badge = document.querySelector('.cart-badge');
-        if (badge) {
-            var n = parseInt(badge.textContent) || 0;
-            badge.textContent = n + 1;
-            badge.parentElement.style.transform = 'scale(1.25)';
-            setTimeout(function () { badge.parentElement.style.transform = ''; }, 300);
-        }
-        setTimeout(function () {
-            if (span) span.textContent = origText;
-            btn.disabled = false;
-        }, 1600);
-    }).catch(function () {
-        if (span) span.textContent = origText;
-        btn.disabled = false;
-    });
-});

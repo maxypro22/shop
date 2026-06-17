@@ -17,50 +17,20 @@
       <div class="fc-grid">
         {%- for card_product in fc_collection.products limit: 4 -%}
           <article class="fc-card" data-index="{{ forloop.index }}">
-            <div class="fc-img-wrap">
-              {%- if section.settings.badge_text != blank -%}
-                <span class="fc-badge">{{ section.settings.badge_text }}</span>
-              {%- endif -%}
-              {%- if card_product.featured_image -%}
-                <img
-                  src="{{ card_product.featured_image | image_url: width: 600 }}"
-                  alt="{{ card_product.title | escape }}"
-                  class="fc-img"
-                  loading="lazy"
-                  width="600"
-                >
-              {%- else -%}
-                <div class="fc-img fc-img--placeholder"></div>
-              {%- endif -%}
-              <div class="fc-hover-overlay">
-                <button class="fc-icon-btn" aria-label="إضافة للمفضلة">
-                  <i data-lucide="heart"></i>
-                </button>
-                <div class="fc-hover-btns">
-                  <a href="{{ card_product.url }}" class="fc-action-btn fc-action-light">
-                    <i data-lucide="eye"></i>
-                    <span>عرض المنتج</span>
-                  </a>
-                  <button type="button" class="fc-action-btn fc-action-dark fc-add-cart" data-variant="{{ card_product.variants.first.id }}">
-                    <i data-lucide="shopping-bag"></i>
-                    <span>للسلة</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="fc-card-info">
-              {%- if card_product.type != blank -%}
-                <span class="fc-cat">{{ card_product.type }}</span>
-              {%- endif -%}
-              <h3 class="fc-name">
-                <a href="{{ card_product.url }}" style="color:inherit;text-decoration:none;">{{ card_product.title }}</a>
-              </h3>
+            <span class="fc-badge">{{ section.settings.badge_text }}</span>
+            {%- if card_product.featured_image -%}
+              <img src="{{ card_product.featured_image | image_url: width: 500 }}" alt="{{ card_product.title | escape }}" class="fc-img" loading="lazy" width="500">
+            {%- else -%}
+              <div class="fc-img fc-img--placeholder"></div>
+            {%- endif -%}
+            <div class="fc-card-overlay">
+              {%- if card_product.type != blank -%}<span class="fc-cat">{{ card_product.type }}</span>{%- endif -%}
+              <h3 class="fc-name">{{ card_product.title }}</h3>
               <p class="fc-price">
-                {%- if card_product.compare_at_price > card_product.price -%}
-                  <span class="fc-price-was">{{ card_product.compare_at_price | money }}</span>
-                {%- endif -%}
+                {%- if card_product.compare_at_price > card_product.price -%}<span class="fc-price-was">{{ card_product.compare_at_price | money }}</span>{%- endif -%}
                 {{ card_product.price | money }}
               </p>
+              <a href="{{ card_product.url }}" class="fc-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
             </div>
           </article>
         {%- endfor -%}
