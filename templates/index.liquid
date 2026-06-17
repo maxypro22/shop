@@ -1,72 +1,92 @@
+{% section 'collections-grid' %}
+
 <!-- Best Sellers Section -->
-<div class="main-container" style="padding-top: 3rem; padding-bottom: 1rem;">
+<section class="bs-section">
+    <div class="main-container">
 
-    <div class="bs-header">
-        <div>
-            <h2 class="bs-title">الأكثر مبيعاً</h2>
-            <p class="bs-subtitle">أبرز المنتجات التي يختارها عملاؤنا</p>
+        <div class="bs-header">
+            <div>
+                <h2 class="bs-title">الأكثر مبيعاً</h2>
+                <p class="bs-subtitle">أبرز المنتجات التي يختارها عملاؤنا</p>
+            </div>
+            <a href="/collections/all" class="btn-view-all">
+                عرض الكل <i data-lucide="arrow-left"></i>
+            </a>
         </div>
-        <a href="/collections/all" class="btn-view-all">
-            عرض الكل <i data-lucide="arrow-left"></i>
-        </a>
+
+        <div class="bs-grid">
+
+            <article class="bs-card" data-bs-idx="0">
+                <div class="bs-img-wrap">
+                    <span class="bs-badge">الأكثر مبيعاً</span>
+                    <img src="{{ 'bs-bag.jpg' | asset_url }}" alt="اكسسوارات" class="bs-img" loading="eager">
+                    <div class="bs-wipe"></div>
+                    <div class="bs-card-overlay">
+                        <span class="bs-cat">اكسسوارات</span>
+                        <h3 class="bs-name">اكسسوارات</h3>
+                        <a href="/collections/اكسسوارات" class="bs-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="bs-foot">
+                    <span class="bs-num">01</span>
+                    <div class="bs-prog"><div class="bs-prog-fill"></div></div>
+                </div>
+            </article>
+
+            <article class="bs-card" data-bs-idx="1">
+                <div class="bs-img-wrap">
+                    <span class="bs-badge">الأكثر مبيعاً</span>
+                    <img src="{{ 'bs-perfume.jpg' | asset_url }}" alt="عطور فاخرة" class="bs-img" loading="lazy">
+                    <div class="bs-wipe"></div>
+                    <div class="bs-card-overlay">
+                        <span class="bs-cat">عطور</span>
+                        <h3 class="bs-name">عطور فاخرة</h3>
+                        <a href="/collections/العطور" class="bs-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="bs-foot">
+                    <span class="bs-num">02</span>
+                    <div class="bs-prog"><div class="bs-prog-fill"></div></div>
+                </div>
+            </article>
+
+            <article class="bs-card" data-bs-idx="2">
+                <div class="bs-img-wrap">
+                    <span class="bs-badge">الأكثر مبيعاً</span>
+                    <img src="{{ 'bs-cap.jpg' | asset_url }}" alt="كابات" class="bs-img" loading="lazy">
+                    <div class="bs-wipe"></div>
+                    <div class="bs-card-overlay">
+                        <span class="bs-cat">كابات</span>
+                        <h3 class="bs-name">كابات</h3>
+                        <a href="/collections/cap" class="bs-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="bs-foot">
+                    <span class="bs-num">03</span>
+                    <div class="bs-prog"><div class="bs-prog-fill"></div></div>
+                </div>
+            </article>
+
+            <article class="bs-card" data-bs-idx="3">
+                <div class="bs-img-wrap">
+                    <span class="bs-badge">الأكثر مبيعاً</span>
+                    <img src="{{ 'bs-shoes.jpg' | asset_url }}" alt="احذية" class="bs-img" loading="lazy">
+                    <div class="bs-wipe"></div>
+                    <div class="bs-card-overlay">
+                        <span class="bs-cat">احذية</span>
+                        <h3 class="bs-name">احذية</h3>
+                        <a href="/collections/shoes" class="bs-btn">عرض المنتج <i data-lucide="arrow-left"></i></a>
+                    </div>
+                </div>
+                <div class="bs-foot">
+                    <span class="bs-num">04</span>
+                    <div class="bs-prog"><div class="bs-prog-fill"></div></div>
+                </div>
+            </article>
+
+        </div>
     </div>
-
-    <div class="bs-grid">
-
-        <!-- Accessories -->
-        <article class="bs-card">
-            <span class="bs-badge">الأكثر مبيعاً</span>
-            <img src="{{ 'bs-bag.jpg' | asset_url }}" alt="اكسسوارات" class="bs-img" loading="eager">
-            <div class="bs-card-overlay">
-                <span class="bs-cat">اكسسوارات</span>
-                <h3 class="bs-name">اكسسوارات</h3>
-                <a href="/collections/اكسسوارات" class="bs-btn">
-                    عرض المنتج <i data-lucide="arrow-left"></i>
-                </a>
-            </div>
-        </article>
-
-        <!-- Perfume -->
-        <article class="bs-card">
-            <span class="bs-badge">الأكثر مبيعاً</span>
-            <img src="{{ 'bs-perfume.jpg' | asset_url }}" alt="عطور فاخرة" class="bs-img" loading="lazy">
-            <div class="bs-card-overlay">
-                <span class="bs-cat">عطور</span>
-                <h3 class="bs-name">عطور فاخرة</h3>
-                <a href="/collections/العطور" class="bs-btn">
-                    عرض المنتج <i data-lucide="arrow-left"></i>
-                </a>
-            </div>
-        </article>
-
-        <!-- Caps -->
-        <article class="bs-card">
-            <span class="bs-badge">الأكثر مبيعاً</span>
-            <img src="{{ 'bs-cap.jpg' | asset_url }}" alt="كابات" class="bs-img" loading="lazy">
-            <div class="bs-card-overlay">
-                <span class="bs-cat">كابات</span>
-                <h3 class="bs-name">كابات</h3>
-                <a href="/collections/cap" class="bs-btn">
-                    عرض المنتج <i data-lucide="arrow-left"></i>
-                </a>
-            </div>
-        </article>
-
-        <!-- Shoes -->
-        <article class="bs-card">
-            <span class="bs-badge">الأكثر مبيعاً</span>
-            <img src="{{ 'bs-shoes.jpg' | asset_url }}" alt="احذية" class="bs-img" loading="lazy">
-            <div class="bs-card-overlay">
-                <span class="bs-cat">احذية</span>
-                <h3 class="bs-name">احذية</h3>
-                <a href="/collections/shoes" class="bs-btn">
-                    عرض المنتج <i data-lucide="arrow-left"></i>
-                </a>
-            </div>
-        </article>
-
-    </div>
-</div>
+</section>
 
 {% section 'featured-collection' %}
 

@@ -181,44 +181,67 @@ document.addEventListener('click', function (e) {
     }
 })();
 
-// Scroll Reveal
+// Scroll Reveal — rededition.com style
 (function () {
     if (!window.IntersectionObserver) return;
 
-    var observer = new IntersectionObserver(function (entries) {
+    // General reveal observer (translateY + fade)
+    var revealObs = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (!entry.isIntersecting) return;
             var el = entry.target;
-            observer.unobserve(el);
+            revealObs.unobserve(el);
             el.classList.add('revealed');
-            // Remove the reveal class after the transition so hover transforms work normally
-            el.addEventListener('transitionend', function cleanup() {
-                el.classList.remove('reveal');
+            el.addEventListener('transitionend', function cleanup(e) {
+                if (e.target !== el) return;
+                el.classList.remove('reveal', 'reveal-fade');
                 el.style.transitionDelay = '';
                 el.removeEventListener('transitionend', cleanup);
             });
         });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
 
-    function addReveal(el, delayMs) {
-        if (el.classList.contains('reveal')) return;
-        el.classList.add('reveal');
+    function addReveal(el, delayMs, fadeOnly) {
+        if (el.classList.contains('reveal') || el.classList.contains('reveal-fade')) return;
+        el.classList.add(fadeOnly ? 'reveal-fade' : 'reveal');
         if (delayMs) el.style.transitionDelay = delayMs + 'ms';
-        observer.observe(el);
+        revealObs.observe(el);
     }
 
     function setupReveals() {
-        // Stagger children inside grids (product cards, best seller cards, feature cards)
-        document.querySelectorAll('.product-grid, .bs-grid, .features-grid').forEach(function (grid) {
-            Array.from(grid.children).forEach(function (child, i) {
-                addReveal(child, i * 90);
+        // Full section blocks slide up (rededition.com effect)
+        [
+            '.cg-section',
+            '.bs-section',
+            '.store-features-section',
+            '.app-download-section'
+        ].forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (el) {
+                addReveal(el, 0, false);
             });
         });
 
-        // Individual section-level reveals
+        // Panoramic banners: fade only (no translateY on full-bleed images)
+        document.querySelectorAll('.pb-wrap').forEach(function (el) {
+            addReveal(el, 0, true);
+        });
+
+        // Featured collection sections
+        document.querySelectorAll('.fc-wrap').forEach(function (el) {
+            addReveal(el, 0, false);
+        });
+
+        // Stagger cards inside grids
+        document.querySelectorAll('.product-grid, .features-grid, .fc-grid').forEach(function (grid) {
+            Array.from(grid.children).forEach(function (child, i) {
+                addReveal(child, i * 80, false);
+            });
+        });
+
+        // Other page elements
         [
-            '.bs-header',
             '.features-header',
+            '.fc-header',
             '.filter-section',
             '.section-title',
             '.product-gallery',
@@ -227,7 +250,7 @@ document.addEventListener('click', function (e) {
             '.pagination-wrapper'
         ].forEach(function (sel) {
             document.querySelectorAll(sel).forEach(function (el) {
-                addReveal(el, 0);
+                addReveal(el, 0, false);
             });
         });
     }
@@ -237,4 +260,67 @@ document.addEventListener('click', function (e) {
     } else {
         setupReveals();
     }
+})();
+
+// Best Sellers — fill-from-bottom wipe animation
+(function () {
+    if (!window.IntersectionObserver) return;
+    var bsObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var card = entry.target;
+            bsObs.unobserve(card);
+            var delay = parseInt(card.dataset.bsIdx || 0, 10) * 140;
+            setTimeout(function () { card.classList.add('bs-in'); }, delay);
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+    function setupBsWipe() {
+        document.querySelectorAll('.bs-card').forEach(function (card) {
+            bsObs.observe(card);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupBsWipe);
+    } else {
+        setupBsWipe();
+    }
+})();
+
+// Collections Grid — arrow navigation + drag scroll
+(function () {
+    var track = document.getElementById('CgTrack');
+    var btnRight = document.getElementById('CgArrowRight');
+    var btnLeft  = document.getElementById('CgArrowLeft');
+    if (!track || !btnRight || !btnLeft) return;
+
+    var STEP = 440; // px per click
+
+    btnRight.addEventListener('click', function () {
+        track.scrollBy({ left: STEP, behavior: 'smooth' });
+    });
+    btnLeft.addEventListener('click', function () {
+        track.scrollBy({ left: -STEP, behavior: 'smooth' });
+    });
+
+    // Drag to scroll
+    var isDragging = false, startX, scrollStart;
+    track.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        startX = e.clientX;
+        scrollStart = track.scrollLeft;
+        track.style.userSelect = 'none';
+        track.style.scrollBehavior = 'auto';
+    });
+    document.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        track.scrollLeft = scrollStart - (e.clientX - startX);
+    });
+    document.addEventListener('mouseup', function () {
+        if (!isDragging) return;
+        isDragging = false;
+        track.style.userSelect = '';
+        track.style.scrollBehavior = '';
+    });
 })();

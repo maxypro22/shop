@@ -1032,6 +1032,11 @@ a.pagination-item:hover {
 }
 
 /* Best Sellers Section */
+/* ── Best Sellers — fill-from-bottom reveal ─────────────────── */
+.bs-section {
+    padding: 3rem 0 4.5rem;
+    background: var(--bg-main);
+}
 .bs-header {
     display: flex;
     align-items: center;
@@ -1074,7 +1079,7 @@ a.pagination-item:hover {
 }
 .btn-view-all:active { transform: scale(0.98); }
 
-/* ── Best Sellers Premium Cards ─────────────────────────── */
+/* ── Grid ─────────────────────────────────────────────────── */
 .bs-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1082,47 +1087,63 @@ a.pagination-item:hover {
     direction: rtl;
 }
 
+/* Card shell */
 .bs-card {
+    cursor: pointer;
+    direction: rtl;
+}
+
+/* Image wrapper */
+.bs-img-wrap {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
     aspect-ratio: 3 / 4;
-    cursor: pointer;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     background: #111;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.45s cubic-bezier(0.16,1,0.3,1),
+                box-shadow 0.45s cubic-bezier(0.16,1,0.3,1);
+}
+.bs-card:hover .bs-img-wrap {
+    transform: translateY(-8px);
+    box-shadow: 0 28px 56px rgba(0,0,0,0.18);
 }
 
-.bs-card:hover {
-    transform: translateY(-10px) scale(1.01);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
-}
-
+/* Image */
 .bs-img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
     will-change: transform;
 }
+.bs-card:hover .bs-img { transform: scale(1.08); }
 
-.bs-card:hover .bs-img {
-    transform: scale(1.09);
+/* Fill-from-bottom wipe */
+.bs-wipe {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-main, #fafafa);
+    transform-origin: top center;
+    transform: scaleY(1);
+    transition: transform 1.05s cubic-bezier(0.16,1,0.3,1);
+    z-index: 3;
+    pointer-events: none;
 }
+.bs-card.bs-in .bs-wipe { transform: scaleY(0); }
 
-/* category / best-seller badge */
+/* Badge */
 .bs-badge {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    z-index: 3;
-    background: rgba(15, 23, 42, 0.78);
+    z-index: 4;
+    background: rgba(15,23,42,0.78);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    color: #ffffff;
+    color: #fff;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.5px;
@@ -1131,25 +1152,24 @@ a.pagination-item:hover {
     border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* sliding info overlay */
+/* Hover info overlay */
 .bs-card-overlay {
     position: absolute;
     inset: auto 0 0 0;
-    z-index: 2;
+    z-index: 5;
     padding: 1.75rem 1.5rem 1.5rem;
     background: linear-gradient(
         to top,
-        rgba(5, 5, 15, 0.92) 0%,
-        rgba(5, 5, 15, 0.6)  55%,
-        transparent          100%
+        rgba(5,5,15,0.92) 0%,
+        rgba(5,5,15,0.6)  55%,
+        transparent       100%
     );
     direction: rtl;
     transform: translateY(30%);
     opacity: 0;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity   0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.42s cubic-bezier(0.16,1,0.3,1),
+                opacity   0.42s cubic-bezier(0.16,1,0.3,1);
 }
-
 .bs-card:hover .bs-card-overlay {
     transform: translateY(0);
     opacity: 1;
@@ -1157,35 +1177,32 @@ a.pagination-item:hover {
 
 .bs-cat {
     display: block;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: rgba(255,255,255,0.6);
     letter-spacing: 1.5px;
     text-transform: uppercase;
     margin-bottom: 0.4rem;
 }
-
 .bs-name {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #fff;
     line-height: 1.3;
     margin-bottom: 0.4rem;
 }
-
 .bs-price {
     font-size: 1rem;
     font-weight: 700;
     color: rgba(255,255,255,0.85);
     margin-bottom: 1.1rem;
 }
-
 .bs-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     padding: 0.6rem 1.25rem;
-    background: #ffffff;
+    background: #fff;
     color: var(--primary);
     border-radius: var(--radius-full);
     font-family: var(--font-family);
@@ -1197,24 +1214,64 @@ a.pagination-item:hover {
 .bs-btn i { width: 14px; height: 14px; }
 .bs-btn:hover {
     background: var(--primary);
-    color: #ffffff;
+    color: #fff;
     transform: translateX(-3px);
 }
+
+/* Number + progress line */
+.bs-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.25rem 0;
+    direction: rtl;
+}
+.bs-num {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.35s ease;
+}
+.bs-card.bs-in .bs-num { color: var(--text-dark); }
+.bs-prog {
+    flex: 1;
+    height: 2px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.bs-prog-fill {
+    height: 100%;
+    background: var(--text-dark);
+    width: 0%;
+    border-radius: 2px;
+    transition: width 1.15s cubic-bezier(0.16,1,0.3,1);
+}
+.bs-card.bs-in .bs-prog-fill { width: 100%; }
 
 /* Responsive */
 @media (max-width: 1024px) {
     .bs-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 }
-@media (max-width: 640px) {
-    .bs-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .bs-name { font-size: 0.95rem; }
-    .bs-price { font-size: 0.875rem; margin-bottom: 0.75rem; }
-    .bs-btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
-    .bs-card-overlay { padding: 1.25rem 1rem 1rem; }
-}
 @media (max-width: 768px) {
     .bs-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .bs-title { font-size: 1.5rem; }
+    .bs-card-overlay {
+        transform: translateY(0) !important;
+        opacity: 1 !important;
+        padding: 1rem 0.9rem 0.9rem;
+    }
+    .bs-name { font-size: 0.9rem; }
+    .bs-price { margin-bottom: 0.65rem; }
+}
+@media (max-width: 640px) {
+    .bs-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .bs-name { font-size: 0.88rem; }
+    .bs-btn { padding: 0.5rem 1rem; font-size: 0.78rem; }
+    .bs-foot { padding: 0.55rem 0.15rem 0; }
 }
 
 /* ── Performance: GPU layers & layout containment ──────────────── */
@@ -1262,18 +1319,24 @@ a.pagination-item:hover {
     contain-intrinsic-size: 0 520px;
 }
 
-/* ─── Scroll Reveal ─────────────────────────────────────────────── */
+/* ─── Scroll Reveal — rededition.com style ──────────────────────── */
 .reveal {
     opacity: 0;
-    transform: translateY(30px) scale(0.97);
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(54px);
+    transition: opacity 0.82s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.82s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
 }
 .reveal.revealed {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
+/* Fade-only variant for full-bleed sections like panoramic banners */
+.reveal-fade {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.reveal-fade.revealed { opacity: 1; }
 
 /* ══════════════════════════════════════════════════════════
    MOBILE CLARITY — Phone View Fixes
