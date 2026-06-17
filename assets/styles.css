@@ -1305,21 +1305,39 @@ a.pagination-item:hover {
     .header-search-mobile { display: none !important; }
 }
 
-/* ── fc-cards & bs-cards: overlay always shown on touch ─── */
+/* ── fc-cards: action buttons always visible on touch ─── */
 @media (max-width: 768px) {
-    .fc-card-overlay {
-        transform: translateY(0) !important;
-        opacity: 1 !important;
-        padding: 1rem 0.9rem 0.9rem;
+    .fc-hover-overlay {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 56%);
+        justify-content: flex-end;
+        padding: 0.55rem;
     }
+    .fc-hover-btns {
+        transform: translateY(0);
+        flex-direction: row;
+        max-width: 100%;
+        width: 100%;
+        gap: 0.3rem;
+    }
+    .fc-action-btn {
+        font-size: 0.69rem;
+        padding: 0.38rem 0.45rem;
+        flex: 1;
+    }
+    .fc-icon-btn {
+        transform: scale(1) translateY(0) !important;
+        opacity: 1 !important;
+        width: 30px;
+        height: 30px;
+    }
+    .fc-icon-btn i { width: 13px; height: 13px; }
     .bs-card-overlay {
         transform: translateY(0) !important;
         opacity: 1 !important;
         padding: 1rem 0.9rem 0.9rem;
     }
-    .fc-name { font-size: 0.9rem; }
     .bs-name { font-size: 0.9rem; }
-    .fc-price { margin-bottom: 0.65rem; }
     .bs-price { margin-bottom: 0.65rem; }
 }
 
@@ -1520,38 +1538,31 @@ a.pagination-item:hover {
 /* Card */
 .fc-card {
     position: relative;
-    border-radius: var(--radius-lg);
+    border-radius: 14px;
     overflow: hidden;
-    aspect-ratio: 4 / 5;
     cursor: pointer;
-    background: #111;
-    border: 1px solid rgba(201, 169, 110, 0.12);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
-    contain: layout style;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.45s ease;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1),
+                box-shadow 0.38s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.35s ease;
+    display: flex;
+    flex-direction: column;
 }
-
 .fc-card:hover {
-    transform: translateY(-10px) scale(1.01);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55),
-                0 0 0 1px rgba(201, 169, 110, 0.35);
-    border-color: rgba(201, 169, 110, 0.35);
-    will-change: transform;
+    transform: translateY(-8px);
+    box-shadow: 0 22px 50px rgba(0,0,0,0.13);
+    border-color: transparent;
 }
 
-/* Staggered entrance */
-.fc-card[data-index="1"] { animation: fcSlideUp 0.6s 0.00s both; }
-.fc-card[data-index="2"] { animation: fcSlideUp 0.6s 0.09s both; }
-.fc-card[data-index="3"] { animation: fcSlideUp 0.6s 0.18s both; }
-.fc-card[data-index="4"] { animation: fcSlideUp 0.6s 0.27s both; }
-
-@keyframes fcSlideUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0); }
+/* Image wrapper */
+.fc-img-wrap {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #f0f0f0;
+    flex-shrink: 0;
 }
 
 /* Image */
@@ -1561,31 +1572,34 @@ a.pagination-item:hover {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    object-position: center;
+    transition: transform 0.65s cubic-bezier(0.16,1,0.3,1);
     will-change: transform;
 }
 .fc-img--placeholder {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #e8e8e8 0%, #f4f4f4 100%);
 }
 .fc-card:hover .fc-img {
-    transform: scale(1.09);
+    transform: scale(1.07);
 }
 
 /* Gold shimmer badge */
 .fc-badge {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 3;
+    top: 0.7rem;
+    right: 0.7rem;
+    z-index: 5;
     background: linear-gradient(110deg, #b8892e 0%, #f0d080 45%, #b8892e 100%);
     background-size: 200% 100%;
     animation: goldShimmer 3s ease infinite;
     color: #060610;
-    font-size: 0.7rem;
+    font-size: 0.66rem;
     font-weight: 800;
     letter-spacing: 0.5px;
-    padding: 0.3rem 0.9rem;
-    border-radius: var(--radius-full);
+    padding: 0.28rem 0.85rem;
+    border-radius: 9999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: none;
 }
 
 @keyframes goldShimmer {
@@ -1594,85 +1608,131 @@ a.pagination-item:hover {
     100% { background-position: 0% 50%; }
 }
 
-/* Sliding info overlay */
-.fc-card-overlay {
+/* Hover overlay — no blur */
+.fc-hover-overlay {
     position: absolute;
-    inset: auto 0 0 0;
-    z-index: 2;
-    padding: 1.75rem 1.5rem 1.5rem;
-    background: linear-gradient(
-        to top,
-        rgba(4, 4, 14, 0.96) 0%,
-        rgba(4, 4, 14, 0.65) 55%,
-        transparent          100%
-    );
-    direction: rtl;
-    transform: translateY(30%);
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.12);
     opacity: 0;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity   0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.28s ease;
+    z-index: 4;
 }
-.fc-card:hover .fc-card-overlay {
-    transform: translateY(0);
-    opacity: 1;
-}
+.fc-card:hover .fc-hover-overlay { opacity: 1; }
 
-.fc-cat {
-    display: block;
-    font-size: 0.68rem;
-    font-weight: 700;
-    color: #c9a96e;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-}
-
-.fc-name {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #ffffff;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
-}
-
-.fc-price {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #c9a96e;
-    margin-bottom: 1rem;
+/* Heart wishlist button */
+.fc-icon-btn {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    width: 36px;
+    height: 36px;
+    background: #fff;
+    border: none;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    transform: scale(0.7) translateY(-10px);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.16,1,0.3,1) 0.05s,
+                opacity   0.22s ease 0.05s,
+                background 0.15s;
+    z-index: 6;
+}
+.fc-card:hover .fc-icon-btn {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+.fc-icon-btn:hover { background: #f5f5f5; }
+.fc-icon-btn i { width: 15px; height: 15px; color: #333; pointer-events: none; }
+.fc-icon-btn.active i { color: #ef4444; fill: #ef4444; }
+
+/* Slide-up action pill buttons */
+.fc-hover-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.42rem;
+    width: 82%;
+    max-width: 180px;
+    transform: translateY(18px);
+    transition: transform 0.32s cubic-bezier(0.16,1,0.3,1) 0.04s;
+}
+.fc-card:hover .fc-hover-btns { transform: translateY(0); }
+
+.fc-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.58rem 1rem;
+    border-radius: 9999px;
+    font-family: var(--font-family);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    white-space: nowrap;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
     direction: rtl;
 }
-.fc-price-was {
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.38);
-    text-decoration: line-through;
-}
+.fc-action-btn:hover { transform: scale(1.04); }
+.fc-action-btn i { width: 13px; height: 13px; flex-shrink: 0; pointer-events: none; }
+.fc-action-light { background: #fff; color: #111; box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+.fc-action-dark  { background: #111; color: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.20); }
+.fc-action-btn:disabled { opacity: 0.7; cursor: default; }
 
-/* CTA button */
-.fc-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.6rem 1.25rem;
-    background: linear-gradient(110deg, #c9a96e 0%, #f0d080 100%);
-    color: #060610;
-    border-radius: var(--radius-full);
-    font-family: var(--font-family);
-    font-size: 0.82rem;
-    font-weight: 800;
-    text-decoration: none;
-    transition: var(--transition);
+/* Info area below image */
+.fc-card-info {
+    padding: 0.8rem 1rem 0.95rem;
+    background: #fff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    direction: rtl;
 }
-.fc-btn i { width: 14px; height: 14px; }
-.fc-btn:hover {
-    background: #ffffff;
-    color: #060610;
-    transform: translateX(-3px);
-    box-shadow: 0 4px 15px rgba(201, 169, 110, 0.38);
+.fc-cat {
+    display: block;
+    font-size: 0.64rem;
+    font-weight: 700;
+    color: #c9a96e;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.fc-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+}
+.fc-price {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    direction: rtl;
+    margin: 0;
+}
+.fc-price-was {
+    font-size: 0.76rem;
+    font-weight: 400;
+    color: #94a3b8;
+    text-decoration: line-through;
 }
 
 /* Responsive */
@@ -1879,14 +1939,11 @@ a.pagination-item:hover {
     .fc-title { font-size: 1.6rem; }
 }
 @media (max-width: 640px) {
-    .fc-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .fc-name { font-size: 0.9rem; }
-    .fc-price { font-size: 0.875rem; margin-bottom: 0.75rem; }
-    .fc-btn { padding: 0.5rem 1rem; font-size: 0.78rem; }
-    .fc-card-overlay { padding: 1.25rem 1rem 1rem; }
+    .fc-grid { grid-template-columns: repeat(2, 1fr); gap: 0.65rem; }
     .fc-eyebrow { font-size: 0.62rem; letter-spacing: 2.5px; }
-    .fc-card { aspect-ratio: 3 / 4; }
-    .fc-img { object-fit: cover; object-position: center center; }
+    .fc-card-info { padding: 0.6rem 0.7rem 0.75rem; gap: 0.2rem; }
+    .fc-name { font-size: 0.82rem; }
+    .fc-price { font-size: 0.8rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════
