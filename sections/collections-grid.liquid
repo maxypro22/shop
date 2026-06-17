@@ -3,7 +3,7 @@
   <div class="cg-header main-container">
     <div class="cg-header-text">
       <span class="cg-eyebrow">SHOP FIVE</span>
-      <h2 class="cg-title">كل الكولكشنات</h2>
+      <h2 class="cg-title">{{ section.settings.title | default: 'كل الكولكشنات' }}</h2>
     </div>
     <div class="cg-arrows">
       <button class="cg-arrow" id="CgArrowRight" aria-label="السابق">
@@ -18,13 +18,17 @@
   <div class="cg-track-wrap">
     <div class="cg-track" id="CgTrack">
 
-      {%- for block in section.blocks -%}
-        {%- assign coll = collections[block.settings.collection] -%}
-        {%- assign card_img = block.settings.image | default: coll.image -%}
-        {%- assign card_name = block.settings.label | default: coll.title -%}
-        {%- assign card_url = coll.url | default: '#' -%}
-        {%- if card_img != blank or coll != blank -%}
-          <a href="{{ card_url }}" class="cg-card{% if block.settings.tall %} cg-card--tall{% endif %}" {{ block.shopify_attributes }}>
+      {%- for i in (1..8) -%}
+        {%- assign col_key  = 'col_'  | append: i -%}
+        {%- assign img_key  = 'img_'  | append: i -%}
+        {%- assign tall_key = 'tall_' | append: i -%}
+        {%- assign coll     = collections[section.settings[col_key]] -%}
+        {%- assign card_img = section.settings[img_key] | default: coll.image -%}
+        {%- if coll != blank or card_img != blank -%}
+          {%- assign card_name = coll.title | default: '' -%}
+          {%- assign card_url  = coll.url   | default: '#' -%}
+          {%- assign is_tall   = section.settings[tall_key] -%}
+          <a href="{{ card_url }}" class="cg-card{% if is_tall %} cg-card--tall{% endif %}">
             {%- if card_img != blank -%}
               <img
                 src="{{ card_img | image_url: width: 550 }}"
@@ -42,31 +46,17 @@
         {%- endif -%}
       {%- endfor -%}
 
-      {%- if section.blocks.size == 0 -%}
-        {%- for ph in (1..10) -%}
-          <div class="cg-card{% if ph == 2 or ph == 6 or ph == 9 %} cg-card--tall{% endif %}">
-            <div class="cg-img-ph"></div>
-            <div class="cg-overlay"><span class="cg-name">كولكشن {{ ph }}</span></div>
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
-
     </div>
   </div>
 
 </section>
 
 <style>
-/* ═══════════════════════════════════════════════
-   COLLECTIONS GRID SECTION
-   ═══════════════════════════════════════════════ */
 .cg-section {
     padding: 4.5rem 0 3rem;
     background: var(--bg-main);
     overflow: hidden;
 }
-
-/* Header */
 .cg-header {
     display: flex;
     align-items: flex-end;
@@ -117,13 +107,7 @@
     transform: scale(1.1);
 }
 .cg-arrow i { width: 18px; height: 18px; pointer-events: none; }
-.cg-arrow:disabled {
-    opacity: 0.35;
-    cursor: default;
-    transform: none;
-}
 
-/* Track */
 .cg-track-wrap { overflow: hidden; }
 .cg-track {
     display: grid;
@@ -141,28 +125,24 @@
 .cg-track:active { cursor: grabbing; }
 .cg-track::-webkit-scrollbar { display: none; }
 
-/* Cards */
 .cg-card {
     position: relative;
     border-radius: 13px;
     overflow: hidden;
     display: block;
     text-decoration: none;
-    background: #ccc;
+    background: #ddd;
     transition: box-shadow 0.35s ease;
 }
 .cg-card--tall { grid-row: span 2; }
-.cg-card:hover {
-    box-shadow: 0 12px 36px rgba(0,0,0,0.2);
-}
+.cg-card:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.2); }
 
 .cg-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: brightness(0.68);
-    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1),
-                filter 0.45s ease;
+    transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), filter 0.45s ease;
 }
 .cg-img-ph {
     width: 100%;
@@ -173,8 +153,6 @@
     transform: scale(1.08);
     filter: brightness(0.9);
 }
-
-/* Overlay */
 .cg-overlay {
     position: absolute;
     inset: 0;
@@ -183,7 +161,6 @@
     padding: 1rem;
     direction: rtl;
     background: linear-gradient(to top, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.04) 50%, transparent 100%);
-    transition: background 0.35s ease;
 }
 .cg-name {
     color: #fff;
@@ -193,15 +170,10 @@
     text-shadow: 0 1px 10px rgba(0,0,0,0.4);
     transform: translateY(6px);
     opacity: 0.72;
-    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1),
-                opacity 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
 }
-.cg-card:hover .cg-name {
-    transform: translateY(0);
-    opacity: 1;
-}
+.cg-card:hover .cg-name { transform: translateY(0); opacity: 1; }
 
-/* Mobile */
 @media (max-width: 768px) {
     .cg-section { padding: 3rem 0 2rem; }
     .cg-track {
@@ -219,17 +191,40 @@
 {% schema %}
 {
   "name": "كل الكولكشنات",
-  "blocks": [
-    {
-      "type": "collection_item",
-      "name": "كولكشن",
-      "settings": [
-        { "type": "collection", "id": "collection", "label": "اختر الكولكشن" },
-        { "type": "image_picker", "id": "image", "label": "صورة مخصصة" },
-        { "type": "text", "id": "label", "label": "اسم مخصص (اختياري)" },
-        { "type": "checkbox", "id": "tall", "label": "كارت طويل (يمتد صفين)", "default": false }
-      ]
-    }
+  "settings": [
+    { "type": "text", "id": "title", "label": "عنوان القسم", "default": "كل الكولكشنات" },
+    { "type": "header", "content": "الكولكشن 1" },
+    { "type": "collection", "id": "col_1", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_1", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_1", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 2" },
+    { "type": "collection", "id": "col_2", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_2", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_2", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 3" },
+    { "type": "collection", "id": "col_3", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_3", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_3", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 4" },
+    { "type": "collection", "id": "col_4", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_4", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_4", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 5" },
+    { "type": "collection", "id": "col_5", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_5", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_5", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 6" },
+    { "type": "collection", "id": "col_6", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_6", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_6", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 7" },
+    { "type": "collection", "id": "col_7", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_7", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_7", "label": "كارت طويل (صفين)", "default": false },
+    { "type": "header", "content": "الكولكشن 8" },
+    { "type": "collection", "id": "col_8", "label": "اختر الكولكشن" },
+    { "type": "image_picker", "id": "img_8", "label": "صورة مخصصة (اختياري)" },
+    { "type": "checkbox", "id": "tall_8", "label": "كارت طويل (صفين)", "default": false }
   ],
   "presets": [{ "name": "كل الكولكشنات" }]
 }
